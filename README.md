@@ -122,9 +122,12 @@ Use visual graph of DOM and component tree as:
 ## Github Auth
 ![Screenshot 2025-06-21 at 2 18 28 AM](https://github.com/user-attachments/assets/51095780-4e19-4b36-9a72-fbf6d5664be0)
 ## Push Branch 
-<img width="976" alt="Screenshot 2025-06-21 at 2 34 04 AM" src="https://github.com/user-attachments/assets/815b6947-f331-4a20-9a03-90c36589cb17" />
+<img width="976" alt="Screenshot 2025-06-21 at 2 34 04 AM" src="https://github.com/user-attachments/assets/815b6947-f331-4a20-9a03-90c36589cb17">
+  
 ## Schema 
-![image](https://github.com/user-attachments/assets/2f94da63-11c0-46c9-b31d-4d0113154c8b)
+ <p align="center"> 
+  <img src="https://github.com/user-attachments/assets/2f94da63-11c0-46c9-b31d-4d0113154c8b" alt="Supported Frameworks" /> </p>
+![image]()
 
 ## Tech Stack 
 | Technology            | Role                                                                 |
