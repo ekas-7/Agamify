@@ -118,3 +118,31 @@ Use visual graph of DOM and component tree as:
 - Modular codebase in target framework
 - Side-by-side diff or visualization between source and target
 - Optional zip/export or Git integration
+
+## Github Auth
+![Screenshot 2025-06-21 at 2 18 28 AM](https://github.com/user-attachments/assets/51095780-4e19-4b36-9a72-fbf6d5664be0)
+## Push Branch 
+<img width="976" alt="Screenshot 2025-06-21 at 2 34 04 AM" src="https://github.com/user-attachments/assets/815b6947-f331-4a20-9a03-90c36589cb17" />
+## Schema 
+![Screenshot 2025-06-21 at 2 39 43 AM](https://github.com/user-attachments/assets/766873d0-4cf0-49a2-9d66-807b26a6d093)
+
+
+
+## Tech Stack 
+| Technology            | Role                                                                 |
+| --------------------- | -------------------------------------------------------------------- |
+| **Next.js**           | Frontend + backend fullstack React framework (API routes, SSR, etc.) |
+| **Prisma**            | ORM to interact with databases (PostgreSQL, MongoDB)                 |
+| **MongoDB (Free)**    | NoSQL database for early-stage data storage                          |
+| **Docker**            | Containerization for consistent environments                         |
+| **PostgreSQL**        | Relational DB used when scaling beyond MongoDB's capabilities        |
+| **Redis**             | In-memory cache for performance (sessions, rate limits, etc.)        |
+| **LangChain**         | Framework to orchestrate LLM calls, memory, tools in RAG pipeline    |
+| **OpenAI Embeddings** | Converts text to vectors for semantic search or RAG                  |
+| **FAISS**             | Vector store to index and search embeddings efficiently              |
+| **Stripe**            | Payment gateway for managing subscriptions and transactions          |
+| **Render**            | Deployment platform for hosting fullstack apps + databases           |
+
+![image](https://github.com/user-attachments/assets/c25da8d3-42c9-4042-ac27-6df14fffba8a)
+
+
