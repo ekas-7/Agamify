@@ -124,10 +124,7 @@ Use visual graph of DOM and component tree as:
 ## Push Branch 
 <img width="976" alt="Screenshot 2025-06-21 at 2 34 04 AM" src="https://github.com/user-attachments/assets/815b6947-f331-4a20-9a03-90c36589cb17" />
 ## Schema 
-![Screenshot 2025-06-21 at 2 39 43 AM](https://github.com/user-attachments/assets/766873d0-4cf0-49a2-9d66-807b26a6d093)
-
-
-
+![image](https://github.com/user-attachments/assets/2f94da63-11c0-46c9-b31d-4d0113154c8b)
 ## Tech Stack 
 | Technology            | Role                                                                 |
 | --------------------- | -------------------------------------------------------------------- |
