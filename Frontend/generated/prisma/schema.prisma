@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// User model - Core user information
+model User {
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  name           String?
+  email          String  @unique
+  owner          Owner   @default(OWNER)
+  contributor    String?
+  nonContributor String?
+
+  // GitHub-specific fields
+  githubId       String? @unique
+  githubUsername String? @unique
+  avatarUrl      String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  repositories Repository[]
+  repoUsers    RepoUser[]
+
+  @@map("users")
+}
+
+// Repository model - Git repositories
+model Repository {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  ownerId     String   @db.ObjectId
+  createdAt   DateTime @default(now())
+
+  // GitHub-specific fields
+  githubId  Int?    @unique
+  htmlUrl   String?
+  cloneUrl  String?
+  isPrivate Boolean @default(false)
+
+  // Relations
+  owner     User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  branches  Branch[]
+  repoUsers RepoUser[]
+
+  @@map("repositories")
+}
+
+// Junction table for User-Repository many-to-many relationship
+model RepoUser {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String @db.ObjectId
+  repositoryId String @db.ObjectId
+  role         Role   @default(CONTRIBUTOR)
+
+  // Relations
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, repositoryId])
+  @@map("repo_users")
+}
+
+// Branch model - Git branches within repositories
+model Branch {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  repositoryId String   @db.ObjectId
+  lastCommit   String?
+  isProtected  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  // Migration tracking
+  migratesTo String[] // Array of target framework branches
+
+  // Relations
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  languages  Language[]
+
+  @@unique([name, repositoryId])
+  @@map("branches")
+}
+
+// Language model - Programming languages and frameworks
+model Language {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name     String  @unique // e.g., "React", "Vue", "Angular", "Svelte"
+  version  String? // e.g., "18.2.0", "3.0", etc.
+  branchId String? @db.ObjectId
+
+  // Framework categorization
+  category FrameworkCategory @default(FRONTEND)
+
+  // Relations
+  branch Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+
+  @@map("languages")
+}
+
+// Enums
+enum Owner {
+  OWNER
+  CONTRIBUTOR
+  NON_CONTRIBUTOR
+}
+
+enum Role {
+  OWNER
+  CONTRIBUTOR
+  NON_CONTRIBUTOR
+}
+
+enum FrameworkCategory {
+  FRONTEND
+  BACKEND
+  FULLSTACK
+  MOBILE
+  DESKTOP
+}
