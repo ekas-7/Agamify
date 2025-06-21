@@ -2,3 +2,5 @@ Frontend/build
 Frontend/node_modules
 Frontend/.env
 Frontend/.next
+Frontend/.next-cache
+Frontend/.vercel
