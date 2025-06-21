@@ -124,7 +124,74 @@ Use visual graph of DOM and component tree as:
 ## Push Branch 
 <img width="976" alt="Screenshot 2025-06-21 at 2 34 04 AM" src="https://github.com/user-attachments/assets/815b6947-f331-4a20-9a03-90c36589cb17">
   
-## Schema 
+## Database Schema Implementation
+
+### MongoDB + Prisma Setup
+
+We have successfully implemented a production-ready database schema using Prisma ORM with MongoDB Cloud. Here's what has been set up:
+
+#### Database Models
+- **User**: Core user information with GitHub integration
+- **Repository**: Git repositories with metadata
+- **Branch**: Git branches within repositories
+- **Language**: Programming languages/frameworks
+- **RepoUser**: Junction table for user-repository relationships
+
+#### Folder Structure
+```
+Frontend/
+├── lib/
+│   └── database/
+│       ├── prisma.ts          # Database connection
+│       ├── user.service.ts     # User operations
+│       ├── repository.service.ts # Repository operations
+│       ├── branch.service.ts   # Branch operations
+│       ├── language.service.ts # Language operations
+│       ├── utils.ts           # Database utilities
+│       └── index.ts           # Exports
+├── types/
+│   └── database.ts            # TypeScript types
+├── pages/api/
+│   ├── database/
+│   │   └── test.ts           # Database test endpoint
+│   ├── users/
+│   │   ├── index.ts          # User CRUD
+│   │   └── [id].ts           # User by ID
+│   └── repositories/
+│       └── index.ts          # Repository CRUD
+├── prisma/
+│   └── schema.prisma         # Database schema
+└── scripts/
+    └── seed.ts               # Database seeding
+```
+
+#### Connection Details
+- **Provider**: MongoDB Atlas Cloud
+- **Database**: agamify
+- **Connection**: Secured with credentials
+- **Features**: 
+  - Type-safe queries with Prisma
+  - Production-ready error handling
+  - Transaction support
+  - Connection pooling
+
+#### API Endpoints
+- `GET /api/database/test` - Test database connection
+- `POST /api/users` - Create user
+- `GET /api/users?email=x` - Find user by email
+- `POST /api/repositories` - Create repository
+- `GET /api/repositories?userId=x` - Get user repositories
+
+#### Available Scripts
+```bash
+npm run db:generate  # Generate Prisma client
+npm run db:push      # Push schema to MongoDB
+npm run db:studio    # Open Prisma Studio
+npm run db:seed      # Seed database with sample data
+npm run db:reset     # Reset and reseed database
+```
+
+#### Schema 
  <p align="center"> 
   <img src="https://github.com/user-attachments/assets/2f94da63-11c0-46c9-b31d-4d0113154c8b" alt="Supported Frameworks" /> </p>
 ![image]()

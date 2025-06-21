@@ -6,7 +6,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:seed": "node -r ts-node/register scripts/seed.ts",
+    "db:reset": "prisma db push --force-reset && npm run db:seed"
   },
   "keywords": [
     "nextjs",
@@ -17,14 +22,17 @@
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
+    "@prisma/client": "^6.10.1",
     "next": "latest",
     "next-auth": "^4.24.11",
+    "prisma": "^6.10.1",
     "react": "latest",
     "react-dom": "latest"
   },
   "devDependencies": {
     "@types/node": "latest",
     "@types/react": "latest",
+    "ts-node": "^10.9.2",
     "typescript": "latest"
   }
 }
