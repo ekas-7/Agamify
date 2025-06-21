@@ -4,11 +4,16 @@ import type { NextAuthOptions } from "next-auth";
 import { UserService } from "../../../lib/database";
 import type { GitHubUser } from "../../../types/database";
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
+      authorization: {
+        params: {
+          scope: 'read:user user:email repo'
+        }
+      }
     }),
   ],
   pages: {
@@ -46,11 +51,13 @@ const authOptions: NextAuthOptions = {
         // Still allow sign in even if database fails
         return true;
       }
-    },
-    async jwt({ token, user, account, profile }) {
+    },    async jwt({ token, user, account, profile }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
+      }
+      if (account) {
+        token.accessToken = account.access_token;
       }
       return token;
     },
@@ -58,6 +65,7 @@ const authOptions: NextAuthOptions = {
       if (session.user && token) {
         (session.user as any).id = token.id;
         session.user.email = token.email as string;
+        (session as any).accessToken = token.accessToken;
       }
       return session;
     },

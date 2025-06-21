@@ -19,10 +19,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
 async function getRepositories(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
-    const { userId, githubId } = req.query
+    const { userId, githubId, userEmail } = req.query
 
     if (userId) {
       const repositories = await RepositoryService.getRepositoriesForUser(userId as string)
+      return res.status(200).json({
+        success: true,
+        data: repositories
+      })
+    }
+
+    if (userEmail) {
+      // Find user by email first, then get their repositories
+      const user = await import('../../../lib/database').then(db => db.UserService.findUserByEmail(userEmail as string))
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          error: 'User not found'
+        })
+      }
+      const repositories = await RepositoryService.getRepositoriesForUser(user.id)
       return res.status(200).json({
         success: true,
         data: repositories
