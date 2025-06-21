@@ -12,7 +12,7 @@ import React from "react";
 const Dashboard: React.FC = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { repositories, loading, importRepository } = useRepositories();
+  const { repositories, loading, importRepository, deleteRepository } = useRepositories();
 
   useEffect(() => {
     if (status === "loading") return;
@@ -30,10 +30,21 @@ const Dashboard: React.FC = () => {
       alert(`❌ Failed to import repository: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
-
   const handleMigrate = (repository: any) => {
     // TODO: Implement migration logic
     alert(`🚀 Migration for ${repository.name} will be implemented soon!`);
+  };
+
+  const handleDelete = async (repository: any) => {
+    if (confirm(`Are you sure you want to remove "${repository.name}" from your imported repositories? This action cannot be undone.`)) {
+      try {
+        await deleteRepository(repository.id);
+        alert(`✅ Successfully removed ${repository.name} from your imports!`);
+      } catch (error) {
+        console.error('Delete error:', error);
+        alert(`❌ Failed to remove repository: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
   };
 
   if (status === "loading") {
@@ -80,11 +91,11 @@ const Dashboard: React.FC = () => {
         <DashboardSection 
           title="📚 Your Imported Repositories"
           subtitle="Repositories you've imported for framework migration"
-        >
-          <RepositoryGrid 
+        >          <RepositoryGrid 
             repositories={repositories}
             loading={loading}
             onMigrate={handleMigrate}
+            onDelete={handleDelete}
           />
         </DashboardSection>
       </div>
