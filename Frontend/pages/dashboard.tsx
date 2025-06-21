@@ -1,9 +1,37 @@
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
+import React from "react";
 
-const Dashboard = () => {
-  const { data: session } = useSession();
+const Dashboard: React.FC = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "loading") return; // Still loading
+    if (!session) {
+      router.push("/"); // Redirect to home page if not authenticated
+    }
+  }, [session, status, router]);
+
+  // Show loading state while checking authentication
+  if (status === "loading") {
+    return (
+      <div>
+        <Navbar />
+        <div style={{ textAlign: "center", padding: "2rem" }}>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render dashboard content if user is not authenticated
+  if (!session) {
+    return null;
+  }
 
   return (
     <div>

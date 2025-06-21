@@ -3,7 +3,7 @@ import React from 'react';
 interface CardProps {
     title: string;
     content: string;
-    actions: React.ReactNode;
+    actions?: React.ReactNode;
 }
 
 const Card: React.FC<CardProps> = ({ title, content, actions }) => {
@@ -11,7 +11,7 @@ const Card: React.FC<CardProps> = ({ title, content, actions }) => {
         <div className="card">
             <h2>{title}</h2>
             <p>{content}</p>
-            <div className="actions">{actions}</div>
+            {actions && <div className="actions">{actions}</div>}
         </div>
     );
 };

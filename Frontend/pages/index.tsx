@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import styles from '../styles/Home.module.css';
 import Navbar from '../components/Navbar';
+import React from 'react';
 
-const Home = () => {
+const Home: React.FC = () => {
   const { data: session } = useSession();
 
   useEffect(() => {
