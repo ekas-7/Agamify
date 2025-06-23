@@ -1,6 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { NextAuthProvider } from '@/app/providers';
+import { NextAuthProvider } from '@/providers';
 import React from 'react';
 
 export const metadata: Metadata = {

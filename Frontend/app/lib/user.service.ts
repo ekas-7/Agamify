@@ -5,7 +5,7 @@ import type {
   CreateUserInput, 
   UpdateUserInput,
   GitHubUser 
-} from '../../types/database'
+} from '@/types/database'
 
 export class UserService {
   /**

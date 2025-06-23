@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { checkDatabaseConnection, getDatabaseStats, initializeDatabase } from '@/lib/database/utils';
+import { checkDatabaseConnection, getDatabaseStats, initializeDatabase } from '@/lib/utils';
 
 export async function GET(request: NextRequest) {
   try {

@@ -1,5 +1,5 @@
 import { prisma } from './prisma'
-import type { CreateLanguageInput } from '../../types/database'
+import type { CreateLanguageInput } from '@/types/database'
 
 export class LanguageService {
   /**

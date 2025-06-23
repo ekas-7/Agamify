@@ -5,7 +5,7 @@ import type {
   CreateRepositoryInput, 
   UpdateRepositoryInput,
   GitHubRepository 
-} from '../../types/database'
+} from '@/types/database'
 
 export class RepositoryService {
   /**

@@ -4,7 +4,7 @@ import type {
   CreateBranchInput, 
   UpdateBranchInput,
   GitHubBranch 
-} from '../../types/database'
+} from '@/types/database'
 
 export class BranchService {
   /**

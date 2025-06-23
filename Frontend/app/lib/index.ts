@@ -8,4 +8,4 @@ export { BranchService } from './branch.service'
 export { LanguageService } from './language.service'
 
 // Types
-export * from '../../types/database'
+export * from '@/types/database'

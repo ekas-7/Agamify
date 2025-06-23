@@ -1,5 +1,5 @@
-import { prisma } from '../lib/database/prisma'
-import { initializeDatabase } from '../lib/database/utils'
+import { prisma } from '../lib/prisma'
+import { initializeDatabase } from '../lib/utils'
 
 async function main() {
   console.log('🌱 Starting database seed...')

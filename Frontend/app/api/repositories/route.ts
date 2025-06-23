@@ -1,4 +1,4 @@
-import { RepositoryService } from '../../../lib/database';
+import { RepositoryService } from '@/lib';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (userEmail) {      // Find user by email first, then get their repositories
-      const user = await import('../../../lib/database').then(db => db.UserService.findUserByEmail(userEmail));
+      const user = await import('@/lib').then(db => db.UserService.findUserByEmail(userEmail));
       if (!user) {
         return NextResponse.json({
           success: false,

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../../auth';
-import { RepositoryService, UserService } from '../../../../lib/database';
+import { authOptions } from '@/auth';
+import { RepositoryService, UserService } from '@/lib';
 
 export async function POST(request: NextRequest) {
   try {
@@ -108,10 +108,9 @@ export async function POST(request: NextRequest) {
 
       if (branchesResponse.ok) {
         const branches = await branchesResponse.json();
-        
-        // Import branches (limit to first 10 to avoid rate limiting)
+          // Import branches (limit to first 10 to avoid rate limiting)
         const branchPromises = branches.slice(0, 10).map(async (branch: any) => {
-          const { BranchService } = await import('../../../../lib/database');
+          const { BranchService } = await import('@/lib');
           return BranchService.createBranch({
             name: branch.name,
             repository: {
@@ -141,16 +140,40 @@ export async function POST(request: NextRequest) {
             'User-Agent': 'Agamify-App'
           }
         }
-      );
-
-      if (languagesResponse.ok) {
+      );      if (languagesResponse.ok) {
         const languages = await languagesResponse.json();
-        const { LanguageService } = await import('../../../../lib/database');
+        const { LanguageService } = await import('@/lib');
         
         // Find the main branch
-        const mainBranch = await RepositoryService.findRepositoryById(newRepository.id);
-        const defaultBranch = mainBranch?.branches.find(b => 
-          b.name === repository.defaultBranch || b.name === 'main' || b.name === 'master'
+        interface Branch {
+          id: string;
+          name: string;
+          lastCommit: string;
+          isProtected: boolean;
+        }
+
+        interface Repository {
+          id: string;
+          name: string;
+          description?: string;
+          owner: {
+            connect: { id: string }
+          };
+          githubId: number;
+          htmlUrl: string;
+          cloneUrl: string;
+          isPrivate: boolean;
+          branches?: Branch[];
+          defaultBranch?: string;
+        }
+
+        const mainBranch: Repository | null = await RepositoryService.findRepositoryById(newRepository.id);
+
+        const defaultBranch: Branch | undefined = mainBranch?.branches?.find(
+          (b: Branch) =>
+            b.name === repository.defaultBranch ||
+            b.name === 'main' ||
+            b.name === 'master'
         );
 
         if (defaultBranch) {
