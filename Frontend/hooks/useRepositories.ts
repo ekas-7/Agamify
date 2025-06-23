@@ -86,8 +86,22 @@ export const useRepositories = () => {
 
     // Refresh the repositories list
     await fetchRepositories()
-    
-    return data.data
+      return data.data
+  }
+
+  const deleteRepository = async (repositoryId: string): Promise<void> => {
+    const response = await fetch(`/api/repositories/${repositoryId}`, {
+      method: 'DELETE',
+    })
+
+    const data = await response.json()
+
+    if (!data.success) {
+      throw new Error(data.error || 'Failed to delete repository')
+    }
+
+    // Refresh the repositories list
+    await fetchRepositories()
   }
 
   useEffect(() => {
@@ -101,7 +115,8 @@ export const useRepositories = () => {
     loading,
     error,
     fetchRepositories,
-    importRepository
+    importRepository,
+    deleteRepository
   }
 }
 

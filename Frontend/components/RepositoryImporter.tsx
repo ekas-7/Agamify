@@ -73,11 +73,21 @@ const RepositoryImporter: React.FC<RepositoryImporterProps> = ({ onImport }) => 
     )
   }
 
-  return (
-    <div className="repository-importer">
+  return (    <div className="repository-importer">
       <div className="header">
         <h2>🚀 Import Git Repository</h2>
         <p>Import any of your GitHub repositories to start migrating between frameworks.</p>
+      </div>
+
+      {/* Free Tier Notice */}
+      <div className="tier-notice">
+        <div className="notice-content">
+          <span className="notice-icon">ℹ️</span>
+          <span className="notice-text">
+            <strong>Free Tier:</strong> Only repository owners can import repositories. 
+            Upgrade to premium to allow collaborators to import shared repositories.
+          </span>
+        </div>
       </div>
 
       <div className="search-bar">
@@ -183,11 +193,38 @@ const RepositoryImporter: React.FC<RepositoryImporterProps> = ({ onImport }) => 
         .header h2 {
           color: #333;
           margin-bottom: 10px;
-        }
-
-        .header p {
+        }        .header p {
           color: #666;
           font-size: 14px;
+        }
+
+        .tier-notice {
+          background: #f8f9fa;
+          border: 1px solid #e9ecef;
+          border-radius: 8px;
+          padding: 12px 16px;
+          margin-bottom: 20px;
+        }
+
+        .notice-content {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .notice-icon {
+          font-size: 16px;
+          flex-shrink: 0;
+        }
+
+        .notice-text {
+          font-size: 14px;
+          color: #495057;
+          line-height: 1.4;
+        }
+
+        .notice-text strong {
+          color: #212529;
         }
 
         .search-bar {

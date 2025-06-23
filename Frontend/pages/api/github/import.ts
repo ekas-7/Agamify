@@ -36,9 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         success: false,
         error: 'Repository data is required'
       })
-    }
-
-    // Check if repository already exists
+    }    // Check if repository already exists
     const existingRepo = await RepositoryService.findRepositoryByGitHubId(repository.id)
     
     if (existingRepo) {
@@ -47,13 +45,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         error: 'Repository already imported',
         data: existingRepo
       })
-    }    // Find the user in our database by email
+    }
+
+    // Find the user in our database by email
     const user = await UserService.findUserByEmail(session.user.email)
     
     if (!user) {
       return res.status(404).json({
         success: false,
         error: 'User not found in database'
+      })
+    }
+
+    // Check if the user is the owner of the repository (free tier restriction)
+    // In free tier, only repository owners can import repositories
+    const repoDetailsResponse = await fetch(`https://api.github.com/repos/${repository.fullName}`, {
+      headers: {
+        'Authorization': `token ${session.accessToken}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Agamify-App'
+      }
+    })
+
+    if (!repoDetailsResponse.ok) {
+      return res.status(403).json({
+        success: false,
+        error: 'Unable to verify repository ownership'
+      })
+    }
+
+    const repoDetails = await repoDetailsResponse.json()
+      // Check if the current user is the owner
+    if (!user.githubUsername || repoDetails.owner.login !== user.githubUsername) {
+      return res.status(403).json({
+        success: false,
+        error: `Only repository owners can import repositories in the free tier. Repository owner: ${repoDetails.owner.login}, Current user: ${user.githubUsername || 'unknown'}. Upgrade to premium to allow collaborators to import repositories.`
       })
     }
 

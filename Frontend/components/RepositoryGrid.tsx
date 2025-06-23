@@ -5,12 +5,14 @@ interface RepositoryGridProps {
   repositories: Repository[]
   loading: boolean
   onMigrate?: (repository: Repository) => void
+  onDelete?: (repository: Repository) => void
 }
 
 const RepositoryGrid: React.FC<RepositoryGridProps> = ({ 
   repositories, 
   loading, 
-  onMigrate 
+  onMigrate,
+  onDelete
 }) => {
   if (loading) {
     return (
@@ -32,13 +34,13 @@ const RepositoryGrid: React.FC<RepositoryGridProps> = ({
     )
   }
 
-  return (
-    <div className="repositories-grid">
+  return (    <div className="repositories-grid">
       {repositories.map((repo) => (
         <RepositoryCard 
           key={repo.id} 
           repository={repo} 
           onMigrate={onMigrate}
+          onDelete={onDelete}
         />
       ))}
 
@@ -99,9 +101,10 @@ const RepositoryGrid: React.FC<RepositoryGridProps> = ({
 interface RepositoryCardProps {
   repository: Repository
   onMigrate?: (repository: Repository) => void
+  onDelete?: (repository: Repository) => void
 }
 
-const RepositoryCard: React.FC<RepositoryCardProps> = ({ repository, onMigrate }) => {
+const RepositoryCard: React.FC<RepositoryCardProps> = ({ repository, onMigrate, onDelete }) => {
   return (
     <div className="repository-card">
       <div className="repo-header">
@@ -122,9 +125,7 @@ const RepositoryCard: React.FC<RepositoryCardProps> = ({ repository, onMigrate }
               {lang.name}
             </span>
           ))}
-      </div>
-
-      <div className="repo-actions">
+      </div>      <div className="repo-actions">
         {onMigrate && (
           <button 
             className="migrate-button"
@@ -141,6 +142,15 @@ const RepositoryCard: React.FC<RepositoryCardProps> = ({ repository, onMigrate }
         >
           GitHub ↗
         </a>
+        {onDelete && (
+          <button 
+            className="delete-button"
+            onClick={() => onDelete(repository)}
+            title="Remove repository from imports"
+          >
+            🗑️ Remove
+          </button>
+        )}
       </div>
 
       <style jsx>{`
@@ -222,15 +232,15 @@ const RepositoryCard: React.FC<RepositoryCardProps> = ({ repository, onMigrate }
         .language-tag.desktop {
           background: #fce4ec;
           color: #c2185b;
-        }
-
-        .repo-actions {
+        }        .repo-actions {
           display: flex;
-          gap: 12px;
+          gap: 8px;
+          flex-wrap: wrap;
         }
 
         .migrate-button {
           flex: 1;
+          min-width: 120px;
           background: #0070f3;
           color: white;
           border: none;
@@ -253,10 +263,24 @@ const RepositoryCard: React.FC<RepositoryCardProps> = ({ repository, onMigrate }
           border-radius: 6px;
           font-weight: 500;
           transition: background-color 0.2s;
+        }        .github-link:hover {
+          background: #1a1e22;
         }
 
-        .github-link:hover {
-          background: #1a1e22;
+        .delete-button {
+          background: #dc3545;
+          color: white;
+          border: none;
+          padding: 10px 16px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 500;
+          transition: background-color 0.2s;
+          font-size: 0.9rem;
+        }
+
+        .delete-button:hover {
+          background: #c82333;
         }
 
         @media (max-width: 768px) {

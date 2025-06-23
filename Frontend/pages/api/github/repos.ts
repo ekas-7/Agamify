@@ -18,16 +18,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         success: false,
         error: 'Not authenticated'
       })
-    }
-
-    // Check if we have an access token
+    }    // Check if we have an access token
     if (!session.accessToken) {
       return res.status(401).json({
         success: false,
         error: 'No access token available'
       })
-    }    // Fetch user's repositories from GitHub API
-    const response = await fetch('https://api.github.com/user/repos?sort=updated&per_page=100', {
+    }
+
+    // Get the current user's GitHub information to filter owned repositories
+    const userResponse = await fetch('https://api.github.com/user', {
+      headers: {
+        'Authorization': `token ${session.accessToken}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Agamify-App'
+      }
+    })
+
+    if (!userResponse.ok) {
+      throw new Error(`GitHub user API error: ${userResponse.status}`)
+    }
+
+    const currentUser = await userResponse.json()
+
+    // Fetch user's repositories from GitHub API (only owned repositories)
+    const response = await fetch('https://api.github.com/user/repos?sort=updated&per_page=100&type=owner', {
       headers: {
         'Authorization': `token ${session.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
@@ -37,12 +52,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     if (!response.ok) {
       throw new Error(`GitHub API error: ${response.status}`)
-    }
+    }    const repos = await response.json()
 
-    const repos = await response.json()
+    // Filter repositories to only include ones where the current user is the owner
+    // This is a free tier restriction - only owners can import repositories
+    const ownedRepos = repos.filter((repo: any) => repo.owner.login === currentUser.login)
 
     // Filter and format the repositories
-    const formattedRepos = repos.map((repo: any) => ({
+    const formattedRepos = ownedRepos.map((repo: any) => ({
       id: repo.id,
       name: repo.name,
       fullName: repo.full_name,
