@@ -1,8 +1,7 @@
-import NextAuth from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
-import type { NextAuthOptions } from "next-auth";
-import { UserService } from "../../../lib/database";
-import type { GitHubUser } from "../../../types/database";
+import { UserService } from "../lib/database";
+import type { GitHubUser } from "../types/database";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -20,9 +19,10 @@ export const authOptions: NextAuthOptions = {
     signIn: '/',
   },
   session: {
-    strategy: 'jwt',
+    strategy: 'jwt' as const,
   },
-  callbacks: {    async signIn({ user, account, profile }) {
+  callbacks: {
+    async signIn({ user, account, profile }: any) {
       try {
         if (account?.provider === 'github' && profile) {
           // Cast profile to any to access GitHub-specific properties
@@ -51,7 +51,8 @@ export const authOptions: NextAuthOptions = {
         // Still allow sign in even if database fails
         return true;
       }
-    },    async jwt({ token, user, account, profile }) {
+    },
+    async jwt({ token, user, account }: { token: any, user: any, account: any }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -61,15 +62,13 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any, token: any }) {
       if (session.user && token) {
-        (session.user as any).id = token.id;
+        session.user.id = token.id;
         session.user.email = token.email as string;
-        (session as any).accessToken = token.accessToken;
+        session.accessToken = token.accessToken;
       }
       return session;
     },
   },
 };
-
-export default NextAuth(authOptions);
