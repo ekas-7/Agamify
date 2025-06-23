@@ -3,10 +3,37 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
 import { RepositoryService, UserService } from '@/lib';
 
+// Define interfaces for GitHub API responses and session
+interface GitHubSession extends Record<string, unknown> {
+  user?: {
+    email?: string;
+  };
+  accessToken?: string;
+}
+
+interface GitHubBranch {
+  name: string;
+  commit: {
+    sha: string;
+  };
+  protected: boolean;
+}
+
+interface GitHubRepository {
+  id: number;
+  name: string;
+  description?: string;
+  fullName: string;
+  htmlUrl: string;
+  cloneUrl: string;
+  private: boolean;
+  defaultBranch?: string;
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Get the user session
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as GitHubSession;
     
     if (!session?.user?.email) {
       return NextResponse.json({
@@ -16,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if we have an access token
-    if (!(session as any).accessToken) {
+    if (!session.accessToken) {
       return NextResponse.json({
         success: false,
         error: 'No access token available'
@@ -57,7 +84,7 @@ export async function POST(request: NextRequest) {
     // In free tier, only repository owners can import repositories
     const repoDetailsResponse = await fetch(`https://api.github.com/repos/${repository.fullName}`, {
       headers: {
-        'Authorization': `token ${(session as any).accessToken}`,
+        'Authorization': `token ${session.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Agamify-App'
       }
@@ -99,7 +126,7 @@ export async function POST(request: NextRequest) {
         `https://api.github.com/repos/${repository.fullName}/branches`,
         {
           headers: {
-            'Authorization': `token ${(session as any).accessToken}`,
+            'Authorization': `token ${session.accessToken}`,
             'Accept': 'application/vnd.github.v3+json',
             'User-Agent': 'Agamify-App'
           }
@@ -107,9 +134,9 @@ export async function POST(request: NextRequest) {
       );
 
       if (branchesResponse.ok) {
-        const branches = await branchesResponse.json();
+        const branches = await branchesResponse.json() as GitHubBranch[];
           // Import branches (limit to first 10 to avoid rate limiting)
-        const branchPromises = branches.slice(0, 10).map(async (branch: any) => {
+        const branchPromises = branches.slice(0, 10).map(async (branch: GitHubBranch) => {
           const { BranchService } = await import('@/lib');
           return BranchService.createBranch({
             name: branch.name,
@@ -135,13 +162,13 @@ export async function POST(request: NextRequest) {
         `https://api.github.com/repos/${repository.fullName}/languages`,
         {
           headers: {
-            'Authorization': `token ${(session as any).accessToken}`,
+            'Authorization': `token ${session.accessToken}`,
             'Accept': 'application/vnd.github.v3+json',
             'User-Agent': 'Agamify-App'
           }
         }
       );      if (languagesResponse.ok) {
-        const languages = await languagesResponse.json();
+        const languages = await languagesResponse.json() as Record<string, number>;
         const { LanguageService } = await import('@/lib');
         
         // Find the main branch

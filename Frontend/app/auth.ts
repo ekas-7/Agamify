@@ -2,6 +2,36 @@ import { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import { UserService } from "@/lib";
 import type { GitHubUser } from "@/types/database";
+import { JWT } from "next-auth/jwt";
+import { Session } from "next-auth";
+import { User } from "next-auth";
+
+interface GitHubProfile {
+  id: string;
+  login: string;
+  name: string;
+  email: string;
+  avatar_url: string;
+}
+
+interface GitHubAccount {
+  provider: string;
+  access_token: string;
+}
+
+interface CustomSession extends Session {
+  user: {
+    id: string;
+    email: string;
+  };
+  accessToken: string;
+}
+
+interface CustomToken extends JWT {
+  id: string;
+  email: string;
+  accessToken: string;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -22,15 +52,15 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt' as const,
   },
   callbacks: {
-    async signIn({ user, account, profile }: any) {
+    async signIn({ user, account, profile }) {
       try {
         if (account?.provider === 'github' && profile) {
-          // Cast profile to any to access GitHub-specific properties
-          const githubProfile = profile as any;
+          // Cast profile to GitHubProfile to access GitHub-specific properties
+          const githubProfile = profile as unknown as GitHubProfile;
           
           // Create GitHubUser object from profile data
           const githubUser: GitHubUser = {
-            id: githubProfile.id,
+            id: parseInt(githubProfile.id),
             login: githubProfile.login,
             name: githubProfile.name,
             email: githubProfile.email,
@@ -52,23 +82,27 @@ export const authOptions: NextAuthOptions = {
         return true;
       }
     },
-    async jwt({ token, user, account }: { token: any, user: any, account: any }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
       }
       if (account) {
-        token.accessToken = account.access_token;
+        token.accessToken = (account as GitHubAccount).access_token;
       }
-      return token;
+      return token as CustomToken;
     },
-    async session({ session, token }: { session: any, token: any }) {
-      if (session.user && token) {
-        session.user.id = token.id;
-        session.user.email = token.email as string;
-        session.accessToken = token.accessToken;
+    async session({ session, token }) {
+      const customSession = session as CustomSession;
+      const customToken = token as CustomToken;
+      
+      if (customSession.user && customToken) {
+        customSession.user.id = customToken.id;
+        customSession.user.email = customToken.email;
+        customSession.accessToken = customToken.accessToken;
       }
-      return session;
+      
+      return customSession;
     },
   },
 };

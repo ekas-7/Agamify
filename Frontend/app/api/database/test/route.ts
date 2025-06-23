@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkDatabaseConnection, getDatabaseStats, initializeDatabase } from '@/lib/utils';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const connected = await checkDatabaseConnection();
     
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   // Initialize database with default data
   try {
     await initializeDatabase();

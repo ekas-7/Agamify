@@ -108,7 +108,7 @@ export const useRepositories = () => {
     if (session) {
       fetchRepositories()
     }
-  }, [session])
+  }, [session, fetchRepositories])
 
   return {
     repositories,
@@ -153,7 +153,7 @@ export const useGitHubRepositories = () => {
     if (session) {
       fetchGitHubRepositories()
     }
-  }, [session])
+  }, [session, fetchGitHubRepositories])
 
   return {
     repositories,

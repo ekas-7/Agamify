@@ -8,6 +8,9 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  experimental: {
+    optimizeCss: true,
+  },
 };
 
 module.exports = nextConfig;

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { UserService } from '@/lib/user.service';
-import type { ApiResponse } from '@/types/database';
 
 export async function POST(request: NextRequest) {
   try {

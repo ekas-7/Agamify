@@ -1,7 +1,7 @@
-import './globals.css';
 import type { Metadata } from 'next';
 import { NextAuthProvider } from '@/providers';
 import React from 'react';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Agamify',

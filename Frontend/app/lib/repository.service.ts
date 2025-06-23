@@ -1,7 +1,6 @@
 import { prisma } from './prisma'
 import type { 
-  RepositoryWithOwner, 
-  RepositoryWithBranches, 
+  RepositoryWithOwner,
   CreateRepositoryInput, 
   UpdateRepositoryInput,
   GitHubRepository 

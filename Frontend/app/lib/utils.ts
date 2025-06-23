@@ -39,7 +39,11 @@ export async function initializeDatabase() {
       await prisma.language.upsert({
         where: { name: framework.name },
         update: {},
-        create: framework as any
+        create: {
+          name: framework.name,
+          category: framework.category as 'FRONTEND' | 'BACKEND' | 'FULLSTACK' | 'MOBILE' | 'DESKTOP',
+          version: framework.version
+        }
       })
     }
 

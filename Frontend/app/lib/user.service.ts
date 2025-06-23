@@ -1,7 +1,6 @@
 import { prisma } from './prisma'
 import type { 
-  UserWithRepositories, 
-  UserWithRepoUsers, 
+  UserWithRepositories,
   CreateUserInput, 
   UpdateUserInput,
   GitHubUser 
