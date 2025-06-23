@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+langchain
+langchain-openai
+faiss-cpu
+chromadb
+sentence-transformers
+python-multipart
+pydantic
+python-dotenv
+tree-sitter
+tree-sitter-languages
