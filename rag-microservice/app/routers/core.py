@@ -16,11 +16,14 @@ from langchain.prompts import PromptTemplate
 from langchain.schema import Document
 import logging
 
+# Suppress FAISS info logs about missing GPU support
+logging.getLogger("faiss").setLevel(logging.WARNING)
+
 router = APIRouter()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class MermaidTreeRequest(BaseModel):
+class PlantUMLTreeRequest(BaseModel):
     git_url: str
     language: str
     code_folder: str
@@ -32,9 +35,9 @@ class CodeAnalyzer:
     """Handles code parsing and function extraction"""
     
     @staticmethod
-    def post_process_mermaid(mermaid_code: str, functions: List[Dict]) -> str:
-        """Post-process mermaid code to fix common issues"""
-        lines = mermaid_code.split('\n')
+    def post_process_plantuml(plantuml_code: str, functions: List[Dict]) -> str:
+        """Post-process PlantUML code to fix common issues"""
+        lines = plantuml_code.split('\n')
         processed_lines = []
         
         # Track component types for better classification
@@ -43,16 +46,16 @@ class CodeAnalyzer:
             if any(keyword in func['file'].lower() for keyword in ['component', 'page', 'layout']):
                 component_files.add(func['file'])
         
-        # Improve node classification
+        # Process each line
         for line in lines:
-            if ':::component' in line and any(keyword in line.lower() for keyword in ['handle', 'format', 'parse', 'validate']):
-                line = line.replace(':::component', ':::util')
-            elif ':::component' in line and 'if[' in line.lower():
-                line = line.replace(':::component', ':::util')
-            
             # Fix naming conventions
             line = re.sub(r'Formatdate', 'FormatDate', line)
             line = re.sub(r'Handlemouse(\w+)', r'HandleMouse\1', line)
+            
+            # Ensure proper PlantUML syntax
+            if '-->' in line:
+                # Clean up arrow connections
+                line = re.sub(r'\s+-->\s+', ' --> ', line)
             
             processed_lines.append(line)
         
@@ -122,8 +125,8 @@ class CodeAnalyzer:
         
         return functions
 
-class MermaidGenerator:
-    """Handles mermaid diagram generation"""
+class PlantUMLGenerator:
+    """Handles PlantUML diagram generation"""
     
     @staticmethod
     def build_call_tree(functions: List[Dict], max_depth: int = 5) -> Dict:
@@ -165,53 +168,85 @@ class MermaidGenerator:
         return call_tree
     
     @staticmethod
-    def tree_to_mermaid(call_tree: Dict) -> str:
-        """Convert call tree to mermaid syntax"""
-        mermaid_lines = ["graph TD"]
-        node_counter = 0
-        node_map = {}
+    def tree_to_plantuml(call_tree: Dict, functions: List[Dict]) -> str:
+        """Convert call tree to PlantUML syntax"""
+        plantuml_lines = ["@startuml"]
+        plantuml_lines.append("!theme plain")
+        plantuml_lines.append("skinparam backgroundColor #FFFFFF")
+        plantuml_lines.append("skinparam component {")
+        plantuml_lines.append("  BackgroundColor #E1F5FE")
+        plantuml_lines.append("  BorderColor #0277BD")
+        plantuml_lines.append("}")
+        plantuml_lines.append("")
         
-        def add_node(name: str, file: str = "") -> str:
-            nonlocal node_counter
-            if name not in node_map:
-                node_id = f"node{node_counter}"
-                node_counter += 1
-                node_map[name] = node_id
-                # Clean name for display
-                display_name = name.replace("_", " ").title()
-                if file:
-                    display_name += f"<br/><small>{os.path.basename(file)}</small>"
-                mermaid_lines.append(f'    {node_id}["{display_name}"]')
-            return node_map[name]
+        # Track processed nodes to avoid duplicates
+        processed_nodes = set()
+        connections = []
         
-        def process_node(node: Dict, parent_id: str = None):
-            current_id = add_node(node["name"], node.get("file", ""))
+        # Create file-based grouping
+        file_groups = {}
+        for func in functions:
+            file_name = os.path.basename(func['file']).replace('.', '_')
+            if file_name not in file_groups:
+                file_groups[file_name] = []
+            file_groups[file_name].append(func['name'])
+        
+        # Add file packages
+        for file_name, func_names in file_groups.items():
+            plantuml_lines.append(f"package \"{file_name}\" {{")
+            for func_name in func_names:
+                if func_name not in processed_nodes:
+                    # Determine component type based on function characteristics
+                    func_data = next((f for f in functions if f['name'] == func_name), None)
+                    if func_data:
+                        if 'component' in func_data['file'].lower() or func_name.startswith(('use', 'Use')):
+                            plantuml_lines.append(f"  component [{func_name}] as {func_name}")
+                        elif 'util' in func_data['file'].lower() or any(keyword in func_name.lower() for keyword in ['format', 'parse', 'validate', 'handle']):
+                            plantuml_lines.append(f"  class {func_name} {{")
+                            plantuml_lines.append(f"    +{func_name}()")
+                            plantuml_lines.append(f"  }}")
+                        else:
+                            plantuml_lines.append(f"  component [{func_name}] as {func_name}")
+                    processed_nodes.add(func_name)
+            plantuml_lines.append("}")
+            plantuml_lines.append("")
+        
+        # Build connections from call tree
+        def process_node_connections(node: Dict, parent_name: str = None):
+            current_name = node["name"]
             
-            if parent_id:
-                mermaid_lines.append(f"    {parent_id} --> {current_id}")
+            if parent_name and parent_name != current_name:
+                connection = f"{parent_name} --> {current_name}"
+                if connection not in connections:
+                    connections.append(connection)
             
             for child_name, child_node in node.get("children", {}).items():
                 if child_node:  # Only process non-empty children
-                    process_node(child_node, current_id)
+                    process_node_connections(child_node, current_name)
         
-        # Process all trees
+        # Process all trees to build connections
         for root_name, root_node in call_tree.items():
             if root_node:
-                process_node(root_node)
+                process_node_connections(root_node)
         
-        return "\n".join(mermaid_lines)
+        # Add connections
+        plantuml_lines.extend(connections)
+        plantuml_lines.append("")
+        plantuml_lines.append("@enduml")
+        
+        return "\n".join(plantuml_lines)
 
-@router.post("/mermaid-tree", response_model=dict, summary="Generate a mermaid.js function call tree from a repo using enhanced RAG")
-async def mermaid_tree(request: MermaidTreeRequest):
+@router.post("/plantuml-tree", response_model=dict, summary="Generate a PlantUML function call tree from a repo using enhanced RAG")
+async def plantuml_tree(request: PlantUMLTreeRequest):
     """
-    Clone the repo, analyze code structure, and generate a mermaid.js function call tree.
+    Clone the repo, analyze code structure, and generate a PlantUML function call tree.
     
     Enhanced LLM Workflow:
     1. Code Extraction: Clone repo and extract relevant source files
     2. Static Analysis: Parse code to identify functions and their relationships
     3. RAG Enhancement: Use vector store to find related code patterns and dependencies
     4. Tree Construction: Build hierarchical call tree with configurable depth
-    5. Mermaid Generation: Convert tree structure to mermaid.js format
+    5. PlantUML Generation: Convert tree structure to PlantUML format
     6. LLM Refinement: Use LLM to enhance and validate the generated tree
     
     Request body example:
@@ -249,38 +284,50 @@ async def mermaid_tree(request: MermaidTreeRequest):
         logger.info("Extracting and analyzing code files")
         all_functions = []
         code_documents = []
-        
+        llm_summaries = []  # For LLM-processed code summaries
+
         file_extensions = {
             "python": [".py"],
             "javascript": [".js", ".jsx"],
             "typescript": [".ts", ".tsx"],
             "nextjs": [".js", ".jsx", ".ts", ".tsx"]
         }.get(request.language.lower(), [".js", ".ts", ".jsx", ".tsx", ".py"])
-        
+
+        # LLM for code summarization before embedding
+        embedding_llm = ChatOpenAI(
+            model="gpt-3.5-turbo",
+            temperature=0.1,
+            openai_api_key=os.getenv("OPENAI_API_KEY")
+        )
+
         for root, _, files in os.walk(code_path):
             for file in files:
                 if any(file.endswith(ext) for ext in file_extensions):
                     file_path = os.path.join(root, file)
                     relative_path = os.path.relpath(file_path, code_path)
-                    
                     try:
                         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                             content = f.read()
-                            
                         # Static analysis
-                        if file.endswith(('.py',)):
+                        if file.endswith((".py",)):
                             functions = CodeAnalyzer.extract_functions_python(content, relative_path)
                         else:
                             functions = CodeAnalyzer.extract_functions_javascript(content, relative_path)
-                        
                         all_functions.extend(functions)
-                        
-                        # Prepare for RAG
+                        # --- LLM Summarization for Embedding ---
+                        summary_prompt = f"""
+Summarize the following code for semantic search and retrieval. Focus on describing its purpose, key functions, and relationships. Be concise and accurate.\n\nFile: {relative_path}\n\nCode:\n{content[:2000]}\n"""
+                        summary_result = embedding_llm.invoke(summary_prompt)
+                        summary = summary_result.content.strip()
+                        llm_summaries.append({
+                            "file": relative_path,
+                            "summary": summary
+                        })
+                        # Prepare for RAG (use summary for embedding)
                         code_documents.append(Document(
-                            page_content=content,
-                            metadata={"file": relative_path, "type": "source_code"}
+                            page_content=summary,
+                            metadata={"file": relative_path, "type": "summary"}
                         ))
-                        
                     except Exception as e:
                         logger.warning(f"Error processing {file_path}: {e}")
         
@@ -304,86 +351,67 @@ async def mermaid_tree(request: MermaidTreeRequest):
         
         # Step 5: Build initial call tree
         logger.info("Building function call tree")
-        call_tree = MermaidGenerator.build_call_tree(all_functions, request.max_depth)
-        initial_mermaid = MermaidGenerator.tree_to_mermaid(call_tree)
-        
-        # Step 6: LLM Enhancement
-        logger.info("Enhancing tree with LLM analysis")
-        llm = ChatOpenAI(
-            model="gpt-3.5-turbo",
+        call_tree = PlantUMLGenerator.build_call_tree(all_functions, request.max_depth)
+        initial_plantuml = PlantUMLGenerator.tree_to_plantuml(call_tree, all_functions)
+
+        # Step 6: LLM Enhancement (combine structure + semantic context)
+        logger.info("Combining structure and semantic context with LLM analysis")
+        structure_llm = ChatOpenAI(
+            model="gpt-4o",
             temperature=0.1,
             openai_api_key=os.getenv("OPENAI_API_KEY")
         )
-        
-        # Create retrieval QA chain
         retriever = vector_store.as_retriever(search_kwargs={"k": 5})
-        
-        enhancement_prompt = PromptTemplate(
+
+        # Use both the call tree and the top semantic summaries for context
+        semantic_context = "\n\n".join([s["summary"] for s in llm_summaries[:10]])
+        structure_prompt = PromptTemplate(
             template="""
-            You are analyzing a React/JavaScript codebase to improve a function call tree diagram.
-            
-            Current Mermaid diagram:
-            {initial_mermaid}
-            
-            Function summary:
-            {function_summary}
-            
-            Context from codebase:
-            {context}
-            
-            Please enhance this mermaid diagram by:
-            1. Adding missing parent-child relationships (App → AccountProvider → Messenger → ChatDialog)
-            2. Properly classifying nodes:
-               - Components (React components): use :::component class
-               - Hooks (useXxx functions): use :::hook class  
-               - Utilities (helper functions): use :::util class
-            3. Adding proper styling classes:
-               - classDef component fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-               - classDef hook fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
-               - classDef util fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px;
-            4. Ensuring proper React component hierarchy is maintained
-            5. Fixing naming conventions (camelCase for functions)
-            
-            Return only the enhanced mermaid code block (starting with 'graph TD'):
-            """,
-            input_variables=["initial_mermaid", "function_summary", "context"]
+You are an expert software architect. Your task is to generate a PlantUML call graph that accurately represents ONLY the real, code-based relationships (calls, uses, imports, data flow) between all functions, components, hooks, utilities, and APIs in the codebase.
+
+Inputs:
+- Initial PlantUML call tree: {initial_plantuml}
+- Function summary: {function_summary}
+- Semantic code summaries: {semantic_context}
+- Additional context: {context}
+
+Instructions:
+- Focus on actual relationships: function calls, component usage, hook invocation, utility usage, API handler connections, and data flow as found in the code and context.
+- Do NOT invent or hallucinate any relationships. Only include what is supported by the code or summaries.
+- Clearly show direct and indirect call chains and usage links.
+- Use PlantUML syntax: @startuml ... @enduml, with --> for calls/uses, ..> for data flow, o--> for optional.
+- Group by file/module if possible, but prioritize showing relationships.
+- Output only the PlantUML diagram, no extra explanation.
+""",
+            input_variables=["initial_plantuml", "function_summary", "semantic_context", "context"]
         )
-        
         qa_chain = RetrievalQA.from_chain_type(
-            llm=llm,
+            llm=structure_llm,
             retriever=retriever,
             return_source_documents=True
         )
-        
-        # Prepare function summary
         function_summary = f"Found {len(all_functions)} functions across {len(set(f['file'] for f in all_functions))} files."
-        
-        # Get relevant context
         context_query = f"function calls relationships dependencies {request.language}"
-        context_result = qa_chain({"query": context_query})
+        context_result = qa_chain.invoke({"query": context_query})
         context = context_result["result"]
-        
-        # Generate enhanced mermaid with detailed analysis
-        enhancement_result = llm.predict(
-            enhancement_prompt.format(
-                initial_mermaid=initial_mermaid,
+        # Generate enhanced PlantUML with detailed analysis
+        enhancement_result = structure_llm.invoke(
+            structure_prompt.format(
+                initial_plantuml=initial_plantuml,
                 function_summary=function_summary,
+                semantic_context=semantic_context,
                 context=context
             )
         )
-        
         # Clean up and validate the result
-        enhanced_mermaid = enhancement_result.strip()
-        if not enhanced_mermaid.startswith("graph"):
-            enhanced_mermaid = initial_mermaid
-        
+        enhanced_plantuml = enhancement_result.content.strip()
+        if not enhanced_plantuml.startswith("@startuml"):
+            enhanced_plantuml = initial_plantuml
         # Post-process to fix common issues
-        enhanced_mermaid = MermaidGenerator.post_process_mermaid(enhanced_mermaid, all_functions)
-        
+        enhanced_plantuml = CodeAnalyzer.post_process_plantuml(enhanced_plantuml, all_functions)
         logger.info("Analysis complete")
-        
         return JSONResponse(content={
-            "mermaid": enhanced_mermaid,
+            "plantuml": enhanced_plantuml,
             "metadata": {
                 "total_functions": len(all_functions),
                 "total_files": len(code_documents),
