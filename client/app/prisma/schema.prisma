@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider      = "prisma-client-js"
-  output        = "../generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
   binaryTargets = ["native", "windows"]
 }
 
@@ -14,26 +14,26 @@ datasource db {
 
 // User model - Core user information
 model User {
-  id             String  @id @default(auto()) @map("_id") @db.ObjectId
-  name           String?
-  email          String  @unique
-  owner          Owner   @default(OWNER)
-  contributor    String?
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String   @unique
+  owner         Owner    @default(OWNER)
+  contributor   String?
   nonContributor String?
-
+  
   // GitHub-specific fields
-  githubId       String? @unique
+  githubId      String?  @unique
   githubUsername String? @unique
-  avatarUrl      String?
-
+  avatarUrl     String?
+  
   // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
   // Relations
-  repositories Repository[]
-  repoUsers    RepoUser[]
-
+  repositories  Repository[]
+  repoUsers     RepoUser[]
+  
   @@map("users")
 }
 
@@ -44,18 +44,18 @@ model Repository {
   description String?
   ownerId     String   @db.ObjectId
   createdAt   DateTime @default(now())
-
+  
   // GitHub-specific fields
-  githubId  Int?    @unique
-  htmlUrl   String?
-  cloneUrl  String?
-  isPrivate Boolean @default(false)
-
+  githubId    Int?     @unique
+  htmlUrl     String?
+  cloneUrl    String?
+  isPrivate   Boolean  @default(false)
+  
   // Relations
-  owner     User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  branches  Branch[]
-  repoUsers RepoUser[]
-
+  owner       User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  branches    Branch[]
+  repoUsers   RepoUser[]
+  
   @@map("repositories")
 }
 
@@ -65,11 +65,11 @@ model RepoUser {
   userId       String @db.ObjectId
   repositoryId String @db.ObjectId
   role         Role   @default(CONTRIBUTOR)
-
+  
   // Relations
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
-
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  
   @@unique([userId, repositoryId])
   @@map("repo_users")
 }
@@ -82,31 +82,31 @@ model Branch {
   lastCommit   String?
   isProtected  Boolean  @default(false)
   createdAt    DateTime @default(now())
-
+  
   // Migration tracking
-  migratesTo String[] // Array of target framework branches
-
+  migratesTo   String[] // Array of target framework branches
+  
   // Relations
-  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
-  languages  Language[]
-
+  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  languages    Language[]
+  
   @@unique([name, repositoryId])
   @@map("branches")
 }
 
 // Language model - Programming languages and frameworks
 model Language {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  name     String  @unique // e.g., "React", "Vue", "Angular", "Svelte"
-  version  String? // e.g., "18.2.0", "3.0", etc.
-  branchId String? @db.ObjectId
-
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique // e.g., "React", "Vue", "Angular", "Svelte"
+  version   String?  // e.g., "18.2.0", "3.0", etc.
+  branchId  String?  @db.ObjectId
+  
   // Framework categorization
-  category FrameworkCategory @default(FRONTEND)
-
+  category  FrameworkCategory @default(FRONTEND)
+  
   // Relations
-  branch Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
-
+  branch    Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  
   @@map("languages")
 }
 
