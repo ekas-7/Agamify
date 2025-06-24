@@ -1,5 +1,6 @@
 import React from 'react';
 import RepoList from './components/RepoList';
+import LogoutButton from './components/LogoutButton';
 
 export default function Dashboard() {
   return (
@@ -61,6 +62,7 @@ export default function Dashboard() {
           <button className="bg-gray-600 hover:bg-gray-700 text-white font-jura px-6 py-3 rounded-lg transition-colors">
             View Profile
           </button>
+          <LogoutButton />
         </div>
 
         {/* Repositories List */}

@@ -3,6 +3,7 @@ import React from 'react';
 import { Jura, Fustat, Inter } from 'next/font/google';
 
 import Navbar from '@/components/Navbar';
+import Providers from './providers';
 
 import './globals.css';
 
@@ -36,11 +37,12 @@ export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
-}) {  return (
+}) {
+  return (
     <html lang="en">
       <body className={`${jura.variable} ${inter.variable} ${fustat.variable}`}>
-          <Navbar />
-          {children}
+        <Navbar />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
