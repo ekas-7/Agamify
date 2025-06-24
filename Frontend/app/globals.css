@@ -1,22 +1,26 @@
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fustat:wght@200..800&display=swap');
+:root {
+  --font-jura: 'Jura', sans-serif;
+  --font-fustat: 'Fustat', sans-serif;
+}
 
+/* Force font loading */
 .font-jura {
-  font-family: 'Jura', sans-serif;
+  font-family: 'Jura', sans-serif !important;
 }
 
 .font-fustat {
-  font-family: 'Fustat', sans-serif;
+  font-family: 'Fustat', sans-serif !important;
 }
 
-*, *::before, *::after {
-    box-sizing: border-box;
+.font-inter {
+  font-family: 'Inter', sans-serif !important;
 }
 
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
+    background-color: black;
 }

@@ -5,12 +5,11 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './ui/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
-  theme: {
+  ],  theme: {
     extend: {
       fontFamily: {
-        jura: ['Jura', 'sans-serif'],
-        fustat: ['Fustat', 'sans-serif'],
+        jura: ['var(--font-jura)', 'sans-serif'],
+        fustat: ['var(--font-fustat)', 'sans-serif'],
       },
     },
   },

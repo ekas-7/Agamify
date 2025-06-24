@@ -1,7 +1,32 @@
 import type { Metadata } from 'next';
 import { NextAuthProvider } from '@/providers';
 import React from 'react';
+import { Jura, Fustat, Inter } from 'next/font/google';
+
+import Navbar from '@/components/Navbar';
+
 import './globals.css';
+
+const jura = Jura({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-jura',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const fustat = Fustat({
+  subsets: ['latin'],
+  weight: ['200', '300', '400', '500', '600', '700', '800'],
+  variable: '--font-fustat',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Agamify',
@@ -12,11 +37,11 @@ export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
-}) {
-  return (
+}) {  return (
     <html lang="en">
-      <body>
+      <body className={`${jura.variable} ${inter.variable} ${fustat.variable}`}>
         <NextAuthProvider>
+          <Navbar />
           {children}
         </NextAuthProvider>
       </body>

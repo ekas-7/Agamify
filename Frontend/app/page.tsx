@@ -1,6 +1,6 @@
 import React from 'react';
-import './globals.css';
-export default function LandingPage() {  return (
+
+export default function LandingPage() {return (
     <div>
       <main>
         <h1 className='text-4xl font-bold font-jura text-center'>Welcome to Agamify</h1>
