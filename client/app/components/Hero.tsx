@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import HeroGradient from "@/components/svg/heroGradient.png";
+import { useRouter } from "next/navigation";
 
 const Hero = () => {
+    const router = useRouter();
     return (
         <section className="min-h-[900px] flex justify-center items-center rounded-b-[40px] relative overflow-hidden">
             <main className="max-w-6xl flex gap-14 justify-center items-center flex-col relative z-10">
@@ -22,7 +26,10 @@ const Hero = () => {
                         </p>
                     </div>
                     <div className="flex justify-center items-center mt-10 gap-5">
-                        <button className="bg-white text-black px-6 py-3 rounded-full font-inter cursor-pointer select-none hover:bg-[#2D1AE6] hover:text-white transition-colors ease">
+                        <button
+                            className="bg-white text-black px-6 py-3 rounded-full font-inter cursor-pointer select-none hover:bg-[#2D1AE6] hover:text-white transition-colors ease"
+                            onClick={() => router.push("/dashboard")}
+                        >
                             GET STARTED
                         </button>
                         <button className="bg-[#211C5540] text-white px-6 py-3 rounded-full font-inter cursor-pointer select-none hover:bg-[#2D1AE6] hover:text-white transition-colors ease">

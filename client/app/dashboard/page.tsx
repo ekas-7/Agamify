@@ -1,4 +1,5 @@
 import React from 'react';
+import RepoList from './components/RepoList';
 
 export default function Dashboard() {
   return (
@@ -60,6 +61,14 @@ export default function Dashboard() {
           <button className="bg-gray-600 hover:bg-gray-700 text-white font-jura px-6 py-3 rounded-lg transition-colors">
             View Profile
           </button>
+        </div>
+
+        {/* Repositories List */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-4 text-white">
+            Your GitHub Repositories
+          </h2>
+          <RepoList />
         </div>
       </div>
     </div>
