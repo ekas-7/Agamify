@@ -7,7 +7,7 @@ const HowToUse = () => {
                         How to Use Agamify
                     </h1>
                     <p className="text-lg text-gray-600 text-center max-w-2xl mx-auto mb-10">
-                        AGAMIFY isn't just for code migration. It's a versatile tool for learning, prototyping, modernizing, and comparing frontend architectures — all from a single platform.
+                        AGAMIFY isn&#39;t just for code migration. It&#39;s a versatile tool for learning, prototyping, modernizing, and comparing frontend architectures — all from a single platform.
                     </p>
                 </div>
             </main>
