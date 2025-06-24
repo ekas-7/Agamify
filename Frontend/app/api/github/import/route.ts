@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/auth';
 import { RepositoryService, UserService } from '@/lib';
 
@@ -19,16 +19,16 @@ interface GitHubBranch {
   protected: boolean;
 }
 
-interface GitHubRepository {
-  id: number;
-  name: string;
-  description?: string;
-  fullName: string;
-  htmlUrl: string;
-  cloneUrl: string;
-  private: boolean;
-  defaultBranch?: string;
-}
+// interface GitHubRepository {
+//   id: number;
+//   name: string;
+//   description?: string;
+//   fullName: string;
+//   htmlUrl: string;
+//   cloneUrl: string;
+//   private: boolean;
+//   defaultBranch?: string;
+// }
 
 export async function POST(request: NextRequest) {
   try {

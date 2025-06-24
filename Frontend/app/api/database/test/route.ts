@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import {  NextResponse } from 'next/server';
 import { checkDatabaseConnection, getDatabaseStats, initializeDatabase } from '@/lib/utils';
 
 export async function GET() {

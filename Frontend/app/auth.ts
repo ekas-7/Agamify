@@ -4,7 +4,7 @@ import { UserService } from "@/lib";
 import type { GitHubUser } from "@/types/database";
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
-import { User } from "next-auth";
+
 
 interface GitHubProfile {
   id: string;

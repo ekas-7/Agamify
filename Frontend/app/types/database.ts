@@ -123,7 +123,7 @@ export interface MigrationRequest {
   sourceBranch: string
   targetFrameworks: string[]
   preserveStructure: boolean
-  migrationConfig?: Record<string, any>
+  migrationConfig?: Record<string, unknown>
 }
 
 export interface MigrationResult {
@@ -134,7 +134,7 @@ export interface MigrationResult {
 }
 
 // API Response types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
   error?: string

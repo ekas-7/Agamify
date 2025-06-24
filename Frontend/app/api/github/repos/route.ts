@@ -1,11 +1,44 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../auth';
 
-export async function GET(request: NextRequest) {
+interface Owner {
+  login: string;
+  avatar_url: string;
+}
+
+interface Repo {
+  id: number;
+  name: string;
+  full_name: string;
+  description: string | null;
+  html_url: string;
+  clone_url: string;
+  private: boolean;
+  language: string | null;
+  stargazers_count: number;
+  forks_count: number;
+  updated_at: string;
+  created_at: string;
+  default_branch: string;
+  owner: Owner;
+}
+
+interface SessionUser {
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
+
+interface Session {
+  user?: SessionUser;
+  accessToken?: string;
+}
+
+export async function GET() {
   try {
     // Get the user session
-    const session = await getServerSession(authOptions);
+    const session = (await getServerSession(authOptions)) as Session;
     
     if (!session?.user) {
       return NextResponse.json({
@@ -15,7 +48,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Check if we have an access token
-    if (!(session as any).accessToken) {
+    if (!session.accessToken) {
       return NextResponse.json({
         success: false,
         error: 'No access token available'
@@ -25,7 +58,7 @@ export async function GET(request: NextRequest) {
     // Get the current user's GitHub information to filter owned repositories
     const userResponse = await fetch('https://api.github.com/user', {
       headers: {
-        'Authorization': `token ${(session as any).accessToken}`,
+        'Authorization': `token ${session.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Agamify-App'
       }
@@ -35,12 +68,12 @@ export async function GET(request: NextRequest) {
       throw new Error(`GitHub user API error: ${userResponse.status}`);
     }
 
-    const currentUser = await userResponse.json();
+    const currentUser: Owner = await userResponse.json();
 
     // Fetch user's repositories from GitHub API (only owned repositories)
     const response = await fetch('https://api.github.com/user/repos?sort=updated&per_page=100&type=owner', {
       headers: {
-        'Authorization': `token ${(session as any).accessToken}`,
+        'Authorization': `token ${session.accessToken}`,
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Agamify-App'
       }
@@ -50,14 +83,14 @@ export async function GET(request: NextRequest) {
       throw new Error(`GitHub API error: ${response.status}`);
     }
 
-    const repos = await response.json();
+    const repos: Repo[] = await response.json();
 
     // Filter repositories to only include ones where the current user is the owner
     // This is a free tier restriction - only owners can import repositories
-    const ownedRepos = repos.filter((repo: any) => repo.owner.login === currentUser.login);
+    const ownedRepos = repos.filter((repo) => repo.owner.login === currentUser.login);
 
     // Filter and format the repositories
-    const formattedRepos = ownedRepos.map((repo: any) => ({
+    const formattedRepos = ownedRepos.map((repo) => ({
       id: repo.id,
       name: repo.name,
       fullName: repo.full_name,
