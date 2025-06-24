@@ -41,4 +41,5 @@ const UserSchema: Schema<IUser> = new Schema({
   githubAccessToken: { type: String },
 });
 
-export const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+export const User: Model<IUser> =
+  (mongoose.models && mongoose.models.User) || mongoose.model<IUser>("User", UserSchema);

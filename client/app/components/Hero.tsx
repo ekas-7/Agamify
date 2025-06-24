@@ -3,9 +3,20 @@
 import Image from "next/image";
 import HeroGradient from "@/components/svg/heroGradient.png";
 import { useRouter } from "next/navigation";
+import { useSession, signIn } from "next-auth/react";
 
 const Hero = () => {
     const router = useRouter();
+    const { status } = useSession();
+
+    const handleGetStarted = () => {
+        if (status === "authenticated") {
+            router.push("/dashboard");
+        } else {
+            signIn("github", { callbackUrl: "/dashboard" });
+        }
+    };
+
     return (
         <section className="min-h-[900px] -translate-y-22 flex justify-center items-center rounded-b-[40px] relative overflow-hidden">
             <main className="max-w-6xl flex gap-14 justify-center items-center flex-col relative z-10">
@@ -28,7 +39,7 @@ const Hero = () => {
                     <div className="flex justify-center items-center mt-10 gap-5">
                         <button
                             className="bg-white text-black px-6 py-3 rounded-full font-inter cursor-pointer select-none hover:bg-[#2D1AE6] hover:text-white transition-colors ease"
-                            onClick={() => router.push("/dashboard")}
+                            onClick={handleGetStarted}
                         >
                             GET STARTED
                         </button>
