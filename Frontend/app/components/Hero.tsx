@@ -10,7 +10,7 @@ const Hero = () => {
                 </div>
                 <div>
                     <div className="flex flex-col gap-5 justify-center items-center text-center">
-                        <h1 className="text-6xl font-bold font-jura text-white text-center uppercase flex-1 w-full">
+                        <h1 className="text-6xl font-bold font-jura text-white text-center tracking-tighter uppercase flex-1 w-full">
                             Migrate frontend code <br /> across frameworks.
                             Instantly.
                         </h1>
