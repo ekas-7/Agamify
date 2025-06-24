@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+:root {
+  --font-jura: 'Jura', sans-serif;
+  --font-fustat: 'Fustat', sans-serif;
+}
+
+/* Force font loading */
+.font-jura {
+  font-family: 'Jura', sans-serif !important;
+}
+
+.font-fustat {
+  font-family: 'Fustat', sans-serif !important;
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif !important;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: black;
+}
