@@ -37,7 +37,7 @@ const Pricing = () => {
                 "Unlimited projects",
             ],
             buttonText: "Buy now",
-            buttonStyle: "bg-[#5D4EFF] hover:bg-[#4A3FE7] text-white",
+            buttonStyle: "bg-[#2D1AE6] hover:bg-[#4A3FE7] text-white",
             popular: true,
         },
         {
@@ -57,7 +57,7 @@ const Pricing = () => {
                 "Unlimited projects",
             ],
             buttonText: "Buy now",
-            buttonStyle: "bg-[#5D4EFF] hover:bg-[#4A3FE7] text-white",
+            buttonStyle: "bg-[#2D1AE6] hover:bg-[#4A3FE7] text-white",
             popular: false,
         },
     ];
@@ -73,33 +73,38 @@ const Pricing = () => {
                         payment you only buy a license once, and all future
                         updates are free for you forever.
                     </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 justify-center items-stretch max-w-6xl mx-auto">
-                    {pricingTiers.map((tier) => (
+                </div>                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 justify-center items-stretch max-w-6xl mx-auto">                    {pricingTiers.map((tier) => (
                         <div
                             key={tier.id}
-                            className={`relative w-full rounded-3xl p-8 transition-all duration-300 flex flex-col bg-white/10 ${
+                            className={`relative w-full rounded-[40px] p-8 transition-all duration-300 flex flex-col bg-white/10 ${
                                 tier.popular
-                                    ? "outline-4 outline-[#2D1AE6] drop-shadow-[0_16px_48px"
+                                    ? "outline-4 outline-[#2D1AE6]"
                                     : ""
                             }`}
+                            style={{
+                                boxShadow: tier.popular 
+                                    ? "0px 16px 48px rgba(45, 24, 251, 0.16), 0px 4px 12px rgba(45, 24, 251, 0.16)"
+                                    : undefined
+                            }}
                         >
                             <div className="text-left mb-6">
                                 <div className="inline-block bg-black text-gray-300 px-3 py-1.5 rounded-full font-inter text-sm font-light mb-6">
                                     {tier.name}
                                 </div>
 
-                                <div className="flex items-baseline mb-4">
-                                    <span className="text-xl text-[#5D4EFF] mr-1">
+                                <div className="flex mb-4 font-fustat">
+                                    <span className="text-2xl self-start text-[#F0D1FF] font-light mr-1">
                                         $
                                     </span>
-                                    <span className="text-6xl font-bold text-white">
+                                    <span className="text-6xl font-light text-white">
                                         {tier.price}
+                                    </span>
+                                    <span className="text-2xl text-white font-light self-end -translate-y-1">
+                                        /month
                                     </span>
                                 </div>
 
-                                <p className="text-gray-400 text-sm leading-relaxed mb-8">
+                                <p className="text-gray-400 text-base leading-relaxed mb-8">
                                     {tier.description}
                                 </p>
                             </div>

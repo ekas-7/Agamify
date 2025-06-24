@@ -89,7 +89,7 @@ const HowToUse = () => {
                                                         : 'max-h-0 opacity-0'
                                                 }`}
                                             >
-                                                <p className='text-gray-300 text-md font-fustat font-light leading-relaxed'>
+                                                <p className='text-gray-300 text-base font-fustat font-light leading-relaxed'>
                                                     {step.description}
                                                 </p>
                                             </div>
