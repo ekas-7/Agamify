@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import FooterGradient from "@/components/svg/footerGradient.png";
-import Logo from "@/components/icons/Logo.png";
 import Navbar from "./Navbar";
 
 const Footer = () => {
