@@ -38,10 +38,10 @@ const HowToUse = () => {
     }, []);
 
     return (
-        <section className="min-h-[900px] flex flex-col items-center justify-center">
+        <section className="min-h-[1000px] flex flex-col items-center justify-center">
             <main className="max-w-6xl mx-auto px-4 py-10">
                 <div className="flex flex-col items-center justify-center gap-5">
-                    <h1 className="text-4xl font-bold text-center tracking-tighter font-jura uppercase text-white">
+                    <h1 className="text-4xl font-bold text-center tracking-tighter font-jura uppercase mt-40 text-white">
                         How to Use Agamify
                     </h1>
                     <p className="text-lg text-gray-600 text-center max-w-4xl mx-auto mb-10">
@@ -49,7 +49,7 @@ const HowToUse = () => {
                     </p>
                 </div>
                 <div className='flex items-center justify-center gap-10 py-16 h-[600px]'>                    {/* Left side - Steps */}
-                    <div className='flex-1 max-w-lg h-full overflow-hidden'>
+                    <div className='flex-1 max-w-lg h-full flex justify-center overflow-hidden'>
                         <div className='relative my-auto'>
                             {/* Purple scrollbar track */}
                             <div className='absolute left-0 top-0 w-1 h-full rounded-full'>
@@ -76,8 +76,8 @@ const HowToUse = () => {
                                         <div className={`cursor-pointer transition-all duration-500 ${
                                             activeStep === index ? 'transform scale-105' : ''
                                         }`}>
-                                            <h3 className={`text-xl font-bold font-jura uppercase tracking-wide mb-2 transition-colors duration-300 ${
-                                                activeStep === index ? 'text-white' : 'text-gray-400'
+                                            <h3 className={`text-2xl font-bold font-jura uppercase tracking-wide mb-2.5 transition-colors duration-300 ${
+                                                activeStep === index ? 'text-[#F0D1FF]' : 'text-white'
                                             }`}>
                                                 {step.title}
                                             </h3>
@@ -89,7 +89,7 @@ const HowToUse = () => {
                                                         : 'max-h-0 opacity-0'
                                                 }`}
                                             >
-                                                <p className='text-gray-300 text-sm leading-relaxed'>
+                                                <p className='text-gray-300 text-md font-fustat font-light leading-relaxed'>
                                                     {step.description}
                                                 </p>
                                             </div>
@@ -111,7 +111,7 @@ const HowToUse = () => {
                                 className='rounded-lg shadow-2xl'
                             />
                             {/* Optional: Add a subtle animation to the image */}
-                            <div className='absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg animate-pulse' />
+                            <div className='absolute inset-0 bg-gradient-to-r from-purple-500/5 to-blue-500/5 rounded-lg animate-pulse' />
                         </div>
                     </div>
                 </div>
