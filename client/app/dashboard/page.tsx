@@ -11,7 +11,7 @@ export default async function DashboardPage() {
   if (session && session.user?.id) {
     const rawRepos = await getUserRepositories();
     repos = Array.isArray(rawRepos)
-      ? JSON.parse(JSON.stringify(rawRepos)).map((repo: any) => ({
+      ? JSON.parse(JSON.stringify(rawRepos)).map((repo: IRepository) => ({
           id: repo.githubId?.toString() ?? "",
           githubId: repo.githubId ?? "",
           name: repo.name ?? "",
