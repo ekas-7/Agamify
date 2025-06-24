@@ -183,7 +183,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/ekaspreetsinghatwal/Desktop/Agamify/client/generated/prisma",
+      "value": "D:\\Programming Stuff\\Web Dev\\Projects\\Agamify\\client\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -192,17 +192,20 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "windows",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "windows"
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/ekaspreetsinghatwal/Desktop/Agamify/client/prisma/schema.prisma",
+    "sourceFilePath": "D:\\Programming Stuff\\Web Dev\\Projects\\Agamify\\client\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../.env",
-    "schemaEnvPath": "../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../../prisma",
   "clientVersion": "6.10.1",
@@ -220,8 +223,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mongodb\"\n  url      = env(\"DATABASE_URL\")\n}\n\n// User model - Core user information\nmodel User {\n  id             String  @id @default(auto()) @map(\"_id\") @db.ObjectId\n  name           String?\n  email          String  @unique\n  owner          Owner   @default(OWNER)\n  contributor    String?\n  nonContributor String?\n\n  // GitHub-specific fields\n  githubId       String? @unique\n  githubUsername String? @unique\n  avatarUrl      String?\n\n  // Timestamps\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // Relations\n  repositories Repository[]\n  repoUsers    RepoUser[]\n\n  @@map(\"users\")\n}\n\n// Repository model - Git repositories\nmodel Repository {\n  id          String   @id @default(auto()) @map(\"_id\") @db.ObjectId\n  name        String\n  description String?\n  ownerId     String   @db.ObjectId\n  createdAt   DateTime @default(now())\n\n  // GitHub-specific fields\n  githubId  Int?    @unique\n  htmlUrl   String?\n  cloneUrl  String?\n  isPrivate Boolean @default(false)\n\n  // Relations\n  owner     User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)\n  branches  Branch[]\n  repoUsers RepoUser[]\n\n  @@map(\"repositories\")\n}\n\n// Junction table for User-Repository many-to-many relationship\nmodel RepoUser {\n  id           String @id @default(auto()) @map(\"_id\") @db.ObjectId\n  userId       String @db.ObjectId\n  repositoryId String @db.ObjectId\n  role         Role   @default(CONTRIBUTOR)\n\n  // Relations\n  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)\n  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)\n\n  @@unique([userId, repositoryId])\n  @@map(\"repo_users\")\n}\n\n// Branch model - Git branches within repositories\nmodel Branch {\n  id           String   @id @default(auto()) @map(\"_id\") @db.ObjectId\n  name         String\n  repositoryId String   @db.ObjectId\n  lastCommit   String?\n  isProtected  Boolean  @default(false)\n  createdAt    DateTime @default(now())\n\n  // Migration tracking\n  migratesTo String[] // Array of target framework branches\n\n  // Relations\n  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)\n  languages  Language[]\n\n  @@unique([name, repositoryId])\n  @@map(\"branches\")\n}\n\n// Language model - Programming languages and frameworks\nmodel Language {\n  id       String  @id @default(auto()) @map(\"_id\") @db.ObjectId\n  name     String  @unique // e.g., \"React\", \"Vue\", \"Angular\", \"Svelte\"\n  version  String? // e.g., \"18.2.0\", \"3.0\", etc.\n  branchId String? @db.ObjectId\n\n  // Framework categorization\n  category FrameworkCategory @default(FRONTEND)\n\n  // Relations\n  branch Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)\n\n  @@map(\"languages\")\n}\n\n// Enums\nenum Owner {\n  OWNER\n  CONTRIBUTOR\n  NON_CONTRIBUTOR\n}\n\nenum Role {\n  OWNER\n  CONTRIBUTOR\n  NON_CONTRIBUTOR\n}\n\nenum FrameworkCategory {\n  FRONTEND\n  BACKEND\n  FULLSTACK\n  MOBILE\n  DESKTOP\n}\n",
-  "inlineSchemaHash": "dc3d875639940533bd43b2350f2b16ccc5614235b038e73151a250ac54c964f7",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../generated/prisma\"\n  binaryTargets = [\"native\", \"windows\"]\n}\n\ndatasource db {\n  provider = \"mongodb\"\n  url      = env(\"DATABASE_URL\")\n}\n\n// User model - Core user information\nmodel User {\n  id             String  @id @default(auto()) @map(\"_id\") @db.ObjectId\n  name           String?\n  email          String  @unique\n  owner          Owner   @default(OWNER)\n  contributor    String?\n  nonContributor String?\n\n  // GitHub-specific fields\n  githubId       String? @unique\n  githubUsername String? @unique\n  avatarUrl      String?\n\n  // Timestamps\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // Relations\n  repositories Repository[]\n  repoUsers    RepoUser[]\n\n  @@map(\"users\")\n}\n\n// Repository model - Git repositories\nmodel Repository {\n  id          String   @id @default(auto()) @map(\"_id\") @db.ObjectId\n  name        String\n  description String?\n  ownerId     String   @db.ObjectId\n  createdAt   DateTime @default(now())\n\n  // GitHub-specific fields\n  githubId  Int?    @unique\n  htmlUrl   String?\n  cloneUrl  String?\n  isPrivate Boolean @default(false)\n\n  // Relations\n  owner     User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)\n  branches  Branch[]\n  repoUsers RepoUser[]\n\n  @@map(\"repositories\")\n}\n\n// Junction table for User-Repository many-to-many relationship\nmodel RepoUser {\n  id           String @id @default(auto()) @map(\"_id\") @db.ObjectId\n  userId       String @db.ObjectId\n  repositoryId String @db.ObjectId\n  role         Role   @default(CONTRIBUTOR)\n\n  // Relations\n  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)\n  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)\n\n  @@unique([userId, repositoryId])\n  @@map(\"repo_users\")\n}\n\n// Branch model - Git branches within repositories\nmodel Branch {\n  id           String   @id @default(auto()) @map(\"_id\") @db.ObjectId\n  name         String\n  repositoryId String   @db.ObjectId\n  lastCommit   String?\n  isProtected  Boolean  @default(false)\n  createdAt    DateTime @default(now())\n\n  // Migration tracking\n  migratesTo String[] // Array of target framework branches\n\n  // Relations\n  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)\n  languages  Language[]\n\n  @@unique([name, repositoryId])\n  @@map(\"branches\")\n}\n\n// Language model - Programming languages and frameworks\nmodel Language {\n  id       String  @id @default(auto()) @map(\"_id\") @db.ObjectId\n  name     String  @unique // e.g., \"React\", \"Vue\", \"Angular\", \"Svelte\"\n  version  String? // e.g., \"18.2.0\", \"3.0\", etc.\n  branchId String? @db.ObjectId\n\n  // Framework categorization\n  category FrameworkCategory @default(FRONTEND)\n\n  // Relations\n  branch Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)\n\n  @@map(\"languages\")\n}\n\n// Enums\nenum Owner {\n  OWNER\n  CONTRIBUTOR\n  NON_CONTRIBUTOR\n}\n\nenum Role {\n  OWNER\n  CONTRIBUTOR\n  NON_CONTRIBUTOR\n}\n\nenum FrameworkCategory {\n  FRONTEND\n  BACKEND\n  FULLSTACK\n  MOBILE\n  DESKTOP\n}\n",
+  "inlineSchemaHash": "b1b084b2d44e5e8429dec6fd1f15886ccedf4154d631488e75fa57bef5b858e6",
   "copyEngine": true
 }
 config.dirname = '/'
