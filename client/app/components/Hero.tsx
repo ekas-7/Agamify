@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 const Hero = () => {
     const router = useRouter();
     return (
-        <section className="min-h-[900px] flex justify-center items-center rounded-b-[40px] relative overflow-hidden">
+        <section className="min-h-[900px] -translate-y-22 flex justify-center items-center rounded-b-[40px] relative overflow-hidden">
             <main className="max-w-6xl flex gap-14 justify-center items-center flex-col relative z-10">
                 <div className="flex justify-center items-center text-white text-center font-fustat font-light rounded-full w-fit bg-white/10 border-white/10 px-5 py-2.5 border-1 mx-auto">
                     Code once build everywhere visualize everything.

@@ -62,7 +62,7 @@ const Pricing = () => {
         },
     ];
     return (
-        <section className="min-h-[1000px] flex flex-col items-center justify-center bg-black">
+        <section className="min-h-[1000px] flex flex-col items-center justify-center bg-black mb-52">
             <main className="max-w-6xl mx-auto px-4 py-10">
                 <div className="flex flex-col items-center justify-center gap-5">
                     <h1 className="text-4xl font-bold text-center tracking-tighter font-jura uppercase mt-40 text-white">
