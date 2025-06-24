@@ -44,7 +44,7 @@ const HowToUse = () => {
                     <h1 className="text-4xl font-bold text-center tracking-tighter font-jura uppercase mt-40 text-white">
                         How to Use Agamify
                     </h1>
-                    <p className="text-lg text-gray-600 text-center max-w-4xl mx-auto mb-10">
+                    <p className="text-lg text-white text-center max-w-4xl mx-auto mb-10 font-fustat font-light leading-relaxed">
                         AGAMIFY isn&apos;t just for code migration. It&apos;s a versatile tool for learning, prototyping, modernizing, and comparing frontend architectures — all from a single platform.
                     </p>
                 </div>
