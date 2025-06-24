@@ -1,4 +1,5 @@
 import { getUserRepositories } from "../../actions/getUserRepositories";
+import type { IRepository } from "../../../models/User";
 
 type Repo = {
   id: string;
@@ -9,11 +10,17 @@ type Repo = {
 };
 
 export default async function RepoList() {
-  const repos = await getUserRepositories();
-  if (!repos || repos.length === 0) return <div>No repositories found.</div>;
+  const rawRepos = await getUserRepositories();
+  const repos: Repo[] = (rawRepos as IRepository[] | undefined)?.map((repo) => ({
+    id: repo.githubId?.toString() ?? "",
+    name: repo.name ?? "",
+    description: repo.description ?? null,
+    htmlUrl: repo.htmlUrl ?? null,
+  })) ?? [];
+  if (repos.length === 0) return <div>No repositories found.</div>;
   return (
     <div className="space-y-4">
-      {repos.map((repo: Repo) => (
+      {repos.map((repo) => (
         <div key={repo.id} className="p-4 border rounded bg-gray-800 text-white">
           <h2 className="text-xl font-bold">{repo.name}</h2>
           <p>{repo.description ?? "No description"}</p>

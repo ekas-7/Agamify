@@ -1,6 +1,7 @@
 import React from 'react';
 import RepoList from './components/RepoList';
 import LogoutButton from './components/LogoutButton';
+import ConnectRepoButton from './components/ConnectRepoButton';
 
 export default function Dashboard() {
   return (
@@ -56,9 +57,7 @@ export default function Dashboard() {
 
         {/* Action Buttons */}
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white font-jura px-6 py-3 rounded-lg transition-colors">
-            Connect Repository
-          </button>
+          <ConnectRepoButton />
           <button className="bg-gray-600 hover:bg-gray-700 text-white font-jura px-6 py-3 rounded-lg transition-colors">
             View Profile
           </button>
