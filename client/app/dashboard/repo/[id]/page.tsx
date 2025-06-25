@@ -5,13 +5,7 @@ import RepoPageClient from "./RepoPageClient";
 import type { IRepository } from "../../../../models/User";
 import { notFound } from "next/navigation";
 
-interface RepoPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default async function RepoPage({ params }: RepoPageProps) {
+export default async function RepoPage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
   
   if (!session) {
@@ -27,5 +21,5 @@ export default async function RepoPage({ params }: RepoPageProps) {
     return notFound();
   }
 
-  return <RepoPageClient repo={repo} session={session} />;
+  return <RepoPageClient repo={repo} />;
 }

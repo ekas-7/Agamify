@@ -10,7 +10,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { repoId, repoUrl, cloneUrl } = await request.json();
+    // const { repoId, repoUrl, cloneUrl } = await request.json();
+    // If you need these in the future, uncomment and use them.
+    await request.json();
 
     // Placeholder for actual repository analysis
     // This would integrate with your PlantUML service and other analysis tools

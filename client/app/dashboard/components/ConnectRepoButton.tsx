@@ -29,12 +29,12 @@ export default function ConnectRepoButton() {
       if (response.ok) {
         const userRepos = await response.json();
         const importedRepoIds = new Set(
-          Array.isArray(userRepos) ? userRepos.map((repo: any) => repo.githubId) : []
+          Array.isArray(userRepos) ? userRepos.map((repo: { githubId: number }) => repo.githubId) : []
         );
         setImportedRepos(importedRepoIds);
       }
-    } catch (error) {
-      console.error('Failed to fetch imported repositories:', error);
+    } catch {
+      console.error('Failed to fetch imported repositories');
     }
   };
 
@@ -87,7 +87,7 @@ export default function ConnectRepoButton() {
       setTimeout(() => {
         window.location.reload();
       }, 300);
-    } catch (error) {
+    } catch {
       alert('An error occurred while importing repositories.');
     } finally {
       setImporting(false);
@@ -135,7 +135,7 @@ export default function ConnectRepoButton() {
     if (showImportModal && availableRepos.length === 0) {
       fetchGitHubRepos();
     }
-  }, [showImportModal]);
+  }, [showImportModal, availableRepos.length]);
 
   useEffect(() => {
     fetchUserImportedRepos();
@@ -239,7 +239,7 @@ export default function ConnectRepoButton() {
                     </svg>
                   </div>
                   <h3 className="text-xl font-jura font-semibold text-white mb-2">All repositories imported!</h3>
-                  <p className="text-white/60 font-fustat">You've imported all available repositories from your GitHub account.</p>
+                  <p className="text-white/60 font-fustat">You&apos;ve imported all available repositories from your GitHub account.</p>
                 </div>
               )}
             </div>

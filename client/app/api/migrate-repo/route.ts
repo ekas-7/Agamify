@@ -10,7 +10,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { repoId, targetFramework, plantuml } = await request.json();
+    // Only destructure targetFramework since repoId and plantuml are unused
+    const { targetFramework } = await request.json();
 
     // Placeholder for actual migration logic
     // This would integrate with your AI migration service

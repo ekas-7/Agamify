@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../lib/authOptions";
 import dbConnect from "../../../lib/mongoose";
 import { User } from "../../../models/User";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     
@@ -36,8 +36,21 @@ export async function GET(request: NextRequest) {
     
     const githubRepos = await response.json();
     
+    // Define a type for GitHub repo
+    interface GithubRepo {
+      id: number;
+      name: string;
+      full_name: string;
+      description: string | null;
+      html_url: string;
+      clone_url: string;
+      private: boolean;
+      language: string | null;
+      updated_at: string;
+    }
+    
     // Convert to the format expected by the frontend
-    const formattedRepos = githubRepos.map((repo: any) => ({
+    const formattedRepos = githubRepos.map((repo: GithubRepo) => ({
       id: repo.id,
       name: repo.name,
       full_name: repo.full_name,

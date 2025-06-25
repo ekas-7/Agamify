@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import type { Session } from "next-auth";
 import type { IRepository } from "../../../models/User";
 

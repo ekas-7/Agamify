@@ -31,7 +31,7 @@ export default function RepoListClient({ repos }: { repos: Repo[] }) {
         </p>
         <div className="bg-white/5 rounded-lg p-4 mb-8">
           <p className="text-white/40 font-fustat text-sm">
-            💡 <strong>Pro tip:</strong> Click "IMPORT REPO" above to browse and select your GitHub repositories for analysis and migration.
+            💡 <strong>Pro tip:</strong> Click &quot;IMPORT REPO&quot; above to browse and select your GitHub repositories for analysis and migration.
           </p>
         </div>
         <div className="flex items-center justify-center gap-4 text-white/30 text-sm font-fustat">

@@ -62,9 +62,18 @@ export async function POST(request: NextRequest) {
         const missingRepoIds = repoIds.filter(id => 
           !user.repositories.some(repo => repo.githubId === id)
         );
+        // Define a type for GitHub repo
+        interface GithubRepo {
+          id: number;
+          name: string;
+          description: string | null;
+          html_url: string;
+          clone_url: string;
+          private: boolean;
+        }
         const additionalRepos = githubRepos
-          .filter((repo: any) => missingRepoIds.includes(repo.id))
-          .map((repo: any) => ({
+          .filter((repo: GithubRepo) => missingRepoIds.includes(repo.id))
+          .map((repo: GithubRepo) => ({
             githubId: repo.id,
             name: repo.name,
             description: repo.description || "",

@@ -1,15 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import type { Session } from "next-auth";
 import type { IRepository } from "../../../../models/User";
 import AnotherGradient from "@/components/svg/anotherGradient.png";
 
 interface RepoPageClientProps {
   repo: IRepository;
-  session: Session;
 }
 
 interface RepoAnalysis {
@@ -25,7 +23,7 @@ interface RepoAnalysis {
   migrationOptions: string[];
 }
 
-export default function RepoPageClient({ repo, session }: RepoPageClientProps) {
+export default function RepoPageClient({ repo }: RepoPageClientProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'overview' | 'visualization' | 'migration'>('overview');
   const [analysis, setAnalysis] = useState<RepoAnalysis | null>(null);
@@ -40,12 +38,7 @@ export default function RepoPageClient({ repo, session }: RepoPageClientProps) {
     { id: 'nextjs', name: 'Next.js', description: 'The React Framework for Production' },
   ];
 
-  useEffect(() => {
-    // Auto-analyze the repository when the component mounts
-    analyzeRepository();
-  }, []);
-
-  const analyzeRepository = async () => {
+  const analyzeRepository = useCallback(async () => {
     setLoading(true);
     try {
       // This is a placeholder - replace with actual API calls
@@ -103,7 +96,7 @@ package "Database" {
           migrationOptions: ['react', 'vue', 'angular', 'svelte', 'nextjs'],
         });
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error analyzing repository:', error);
       // Set fallback data even on error
       setAnalysis({
@@ -121,7 +114,12 @@ package "Database" {
     } finally {
       setLoading(false);
     }
-  };
+  }, [repo]);
+
+  useEffect(() => {
+    // Auto-analyze the repository when the component mounts
+    analyzeRepository();
+  }, [analyzeRepository]);
 
   const handleMigration = async () => {
     if (!selectedFramework) return;
@@ -227,7 +225,7 @@ package "Database" {
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as 'overview' | 'visualization' | 'migration')}
                 className={`px-6 py-3 rounded-full font-inter text-sm transition-all duration-300 ${
                   activeTab === tab.id
                     ? 'bg-white text-black'
