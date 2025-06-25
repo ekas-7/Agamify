@@ -1,21 +1,51 @@
 # Agamify
-**Multi Web Framework Builder Agent + Function Visualizer**
+**Universal Codebase Translator + Function Visualizer**
 
 ## Abstract
 
-This project introduces an intelligent agent designed to migrate web application code across multiple frontend frameworks, streamlining cross-framework development and modernization workflows. The Multi Web Framework Builder Agent + Function Visualizer takes a single-source codebase—originally written in frameworks such as React, Vue, Angular, Svelte, or Next.js—and automatically translates it into semantically equivalent implementations in all other supported frameworks. 
+Agamify is an intelligent system designed to translate, refactor, and visualize source code across any kind of codebase—frontend, backend, scripting, system-level, mobile, and more. It automates cross-language and cross-framework migration while preserving logic, architecture, and functionality, enabling seamless portability, modernization, and collaborative understanding of software systems.
 
-This migration preserves functionality, component structure, and application logic, enabling seamless interoperability and comparative analysis. Accompanying this migration capability is a powerful Function Visualizer, which performs static analysis on the original and translated code to generate interactive visualizations of function call graphs, component hierarchies, and data flow relationships. This aids in understanding complex logic, debugging discrepancies between framework implementations, and ensuring fidelity across translations.
+At its core, Agamify provides:
 
-By combining LLM-based transformation with visual introspection, the system supports use cases ranging from legacy migration and framework benchmarking to educational exploration and rapid prototyping. The platform not only reduces the manual overhead of rewriting applications but also deepens developers' cross-framework insight through a unified, visual, and explainable interface.
+Cross-Migration: Move your existing projects—regardless of language or framework—into other supported environments without manual rewriting.
+
+Rapid Prototyping: Build core logic once and instantly generate equivalent implementations in multiple ecosystems for fast iteration and testing.
+
+Developer Education: Understand how different languages and paradigms handle the same logic through side-by-side comparisons and visual representations.
+
+Framework & Language Benchmarking: Compare performance, structure, and readability across implementations to make informed technology choices.
+
+Modernize Legacy Code: Refactor outdated, monolithic, or unstructured codebases into clean, maintainable, modern architectures.
+
+Team Collaboration: Visualize and standardize component and module structures across teams, enabling consistent architecture and shared library migration.
+
+To support this, Agamify features a powerful Function Visualizer that performs static analysis on both original and translated code to generate interactive views of function call graphs, data flow, and component/module hierarchies. This visual layer enhances understanding, debugging, and confidence in translated outputs.
+
+By combining large language model (LLM)-powered translation with deep visual insight, Agamify enables a new level of productivity and clarity in working with complex or legacy codebases—supporting use cases from enterprise modernization and research to teaching, rapid development, and platform migration.
 
 ## Abstract Architecture 
 
-![Architecture Diagram](https://github.com/user-attachments/assets/0672cc8d-7462-482e-94fe-894b9a23445d)
+<img width="1433" alt="image" src="https://github.com/user-attachments/assets/7a9c501e-3a0a-4f1e-8f63-754ea3c795ec" />
+
 
 ### Supported Frameworks
-<p  > The tool supports the following frameworks for both input and cross-framework migration: </p> <p align="center"> 
-  <img src="https://github.com/user-attachments/assets/db0e4b06-646f-4c50-820c-5cd7a7c0734e" alt="Supported Frameworks" /> </p>
+
+
+| Feature                          | Description                                                                 |
+|----------------------------------|-----------------------------------------------------------------------------|
+| **CROSS-MIGRATION**              | Migrate any codebase—web, backend, scripts, mobile, etc.—to other supported stacks without manual rewriting. |
+| **RAPID PROTOTYPING**            | Build logic once, then instantly generate equivalent implementations across multiple environments for fast iteration. |
+| **DEVELOPER EDUCATION**          | Explore how different languages/frameworks handle the same logic via side-by-side comparisons and visual mapping. |
+| **FRAMEWORK & LANGUAGE BENCHMARKING** | Compare structure, readability, and performance across different implementations—useful when selecting tech stacks. |
+| **MODERNIZE LEGACY CODE**        | Refactor outdated codebases into clean, maintainable, and modular modern structures. |
+| **TEAM COLLABORATION**           | Ensure architectural consistency across teams by visualizing module structures and migrating shared libraries. |
+
+---
+
+🎯 Whether you're a solo developer, part of a team, or modernizing enterprise applications—these features streamline migration, learning, and collaboration across the entire software lifecycle.
+
+
+
 
 ## Workflow
 
@@ -209,8 +239,7 @@ npm run db:reset     # Reset and reseed database
 | **OpenAI Embeddings** | Converts text to vectors for semantic search or RAG                  |
 | **FAISS**             | Vector store to index and search embeddings efficiently              |
 | **Stripe**            | Payment gateway for managing subscriptions and transactions          |
-| **Render**            | Deployment platform for hosting fullstack apps + databases           |
+| **Azure**            | Deployment platform for hosting fullstack apps + databases           |
 
-![image](https://github.com/user-attachments/assets/c25da8d3-42c9-4042-ac27-6df14fffba8a)
 
 
