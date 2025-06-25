@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Repo = {
   id: string;
@@ -9,144 +10,102 @@ type Repo = {
   htmlUrl: string | null;
 };
 
-type PlantUMLParams = {
-  git_url: string;
-  language: string;
-  code_folder: string;
-  auth_token?: string;
-  max_depth: number;
-  include_external: boolean;
-};
-
 export default function RepoListClient({ repos }: { repos: Repo[] }) {
-  const [showModal, setShowModal] = useState(false);
-  const [selectedRepo, setSelectedRepo] = useState<Repo | null>(null);
-  const [params, setParams] = useState<PlantUMLParams>({
-    git_url: "",
-    language: "",
-    code_folder: "",
-    auth_token: "",
-    max_depth: 5,
-    include_external: false,
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  const handleVisualize = (repo: Repo) => {
-    setSelectedRepo(repo);
-    setParams({
-      git_url: repo.htmlUrl || "",
-      language: "",
-      code_folder: "",
-      auth_token: "",
-      max_depth: 5,
-      include_external: false,
-    });
-    setError(null);
-    setShowModal(true);
+  const handleViewRepo = (repo: Repo) => {
+    // Navigate to individual repo page
+    router.push(`/dashboard/repo/${repo.id}`);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    setParams((prev) => ({
-      ...prev,
-      [name]: type === "checkbox"
-        ? (e.target as HTMLInputElement).checked
-        : value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      // Call PlantUML API
-      const res = await fetch("http://ekas-rag-ms-unique-1750712931.eastus.azurecontainer.io:8000/plantuml_tree", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          git_url: params.git_url,
-          language: params.language,
-          code_folder: params.code_folder,
-          auth_token: params.auth_token || undefined,
-          max_depth: Number(params.max_depth),
-          include_external: params.include_external,
-        }),
-      });
-      if (!res.ok) throw new Error("PlantUML API error");
-      const plantumlData = await res.json();
-      // Call ChatGPT API (replace with your endpoint)
-      const chatRes = await fetch("/api/chtagpt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plantuml: plantumlData }),
-      });
-      if (!chatRes.ok) throw new Error("ChatGPT API error");
-      const chatData = await chatRes.json();
-      // Console the JSON and close modal
-      console.log("PlantUML Data:", plantumlData);
-      console.log("ChatGPT Data:", chatData);
-      closeModal();
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Unknown error");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedRepo(null);
-  };
-
-  if (repos.length === 0) return <div>No repositories found.</div>;
-  return (
-    <div className="space-y-4">
-      {repos.map((repo) => (
-        <div key={repo.id} className="p-4 border rounded bg-gray-800 text-white">
-          <h2 className="text-xl font-bold">{repo.name}</h2>
-          <p>{repo.description ?? "No description"}</p>
-          <a href={repo.htmlUrl ?? "#"} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">View on GitHub</a>
-          <button
-            className="ml-4 px-3 py-1 bg-green-600 rounded hover:bg-green-700"
-            onClick={() => handleVisualize(repo)}
-          >
-            Visualize
-          </button>
+  if (repos.length === 0) {
+    return (
+      <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-12 border border-white/10 text-center">
+        <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg className="w-8 h-8 text-white/60" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+          </svg>
         </div>
-      ))}
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white text-black p-6 rounded shadow-lg w-full max-w-md">
-            <h3 className="text-lg font-bold mb-2">Visualize Repo: {selectedRepo?.name}</h3>
-            <form onSubmit={handleSubmit} className="space-y-2">
-              <input name="git_url" value={params.git_url} onChange={handleChange} placeholder="Git URL" className="w-full p-1 border rounded" required />
-              <input name="language" value={params.language} onChange={handleChange} placeholder="Language (e.g. javascript)" className="w-full p-1 border rounded" required />
-              <input name="code_folder" value={params.code_folder} onChange={handleChange} placeholder="Code Folder (e.g. src)" className="w-full p-1 border rounded" required />
-              <input name="auth_token" value={params.auth_token} onChange={handleChange} placeholder="Auth Token (optional)" className="w-full p-1 border rounded" />
-              <input name="max_depth" type="number" value={params.max_depth} onChange={handleChange} placeholder="Max Depth" className="w-full p-1 border rounded" min={1} max={10} />
-              <label className="flex items-center">
-                <input name="include_external" type="checkbox" checked={params.include_external} onChange={handleChange} className="mr-2" />
-                Include External
-              </label>
-              <div className="flex gap-2 mt-2">
-                <button type="submit" className="bg-blue-600 text-white px-3 py-1 rounded" disabled={loading}>
-                  {loading ? "Processing..." : "Submit"}
-                </button>
-                <button type="button" className="bg-gray-400 px-3 py-1 rounded" onClick={closeModal} disabled={loading}>
-                  Cancel
-                </button>
+        <h3 className="text-2xl font-jura font-bold text-white mb-4">No Repositories Found</h3>
+        <p className="text-white/60 font-fustat mb-8">
+          Import your GitHub repositories to start analyzing and migrating your projects.
+        </p>
+        <p className="text-white/40 font-fustat text-sm">
+          Click "Import Repositories" above to get started.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {repos.map((repo) => (
+        <div
+          key={repo.id}
+          className="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-[#68A2FF]/25 transition-all duration-300 hover:bg-white/15"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-[#68A2FF] to-[#2D18FB] rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-jura font-bold text-white group-hover:text-[#68A2FF] transition-colors">
+                    {repo.name}
+                  </h3>
+                  <div className="flex items-center gap-2 text-white/60 text-sm font-fustat">
+                    <span>Repository</span>
+                    <span>•</span>
+                    <span>Public</span>
+                  </div>
+                </div>
               </div>
-            </form>
-            {error && <div className="mt-4 p-2 bg-red-100 text-red-800 rounded">{error}</div>}
+              <p className="text-white/80 font-fustat text-base leading-relaxed mb-4">
+                {repo.description || "No description available"}
+              </p>
+              
+              {/* Tech Stack Placeholder */}
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xs text-white/60 font-fustat">TECH STACK:</span>
+                <div className="flex gap-2">
+                  <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-white/80 font-inter">JavaScript</span>
+                  <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-white/80 font-inter">React</span>
+                  <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-white/80 font-inter">Node.js</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 ml-6">
+              <button
+                onClick={() => handleViewRepo(repo)}
+                className="bg-white text-black px-6 py-2.5 rounded-full font-inter text-sm cursor-pointer select-none hover:bg-[#2D1AE6] hover:text-white transition-colors ease flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                  <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                </svg>
+                ANALYZE
+              </button>
+              
+              <a
+                href={repo.htmlUrl ?? "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#211C5540] text-white px-6 py-2.5 rounded-full font-inter text-sm cursor-pointer select-none hover:bg-[#2D1AE6] hover:text-white transition-colors ease text-center flex items-center gap-2 justify-center"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z" clipRule="evenodd" />
+                  <path fillRule="evenodd" d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z" clipRule="evenodd" />
+                </svg>
+                GITHUB
+              </a>
+            </div>
           </div>
         </div>
-      )}
+      ))}
     </div>
   );
 }
