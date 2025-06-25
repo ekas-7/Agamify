@@ -40,8 +40,8 @@ const HowToUse = () => {
 
     // Reset video loading state when step changes
     useEffect(() => {
-        if (activeStep === 0) {
-            // Reset video loading when we come back to step 1
+        if (activeStep === 0 || activeStep === 1 || activeStep === 2) {
+            // Reset video loading when we come to step 1, step 2, or step 3
             setVideoLoaded(false);
         }
     }, [activeStep]);
@@ -146,7 +146,7 @@ const HowToUse = () => {
                                         }`}
                                         onLoadedData={() => setVideoLoaded(true)}
                                         onError={() => {
-                                            console.log('Video failed to load');
+                                            console.log('Step 1 video failed to load');
                                             setVideoLoaded(false);
                                         }}
                                     >
@@ -154,8 +154,70 @@ const HowToUse = () => {
                                         Your browser does not support the video tag.
                                     </video>
                                 </div>
+                            ) : activeStep === 1 ? (
+                                // Show video for step 2
+                                <div className='relative'>
+                                    {!videoLoaded && (
+                                        <Image 
+                                            src={Agamify} 
+                                            alt="Loading..." 
+                                            width={800} 
+                                            height={350} 
+                                            className='rounded-lg shadow-2xl'
+                                        />
+                                    )}
+                                    <video
+                                        key="step-2-video"
+                                        width={800}
+                                        height={350}
+                                        autoPlay
+                                        muted
+                                        className={`rounded-lg shadow-2xl transition-opacity duration-500 ${
+                                            videoLoaded ? 'opacity-100' : 'opacity-0 absolute top-0 left-0'
+                                        }`}
+                                        onLoadedData={() => setVideoLoaded(true)}
+                                        onError={() => {
+                                            console.log('Step 2 video failed to load');
+                                            setVideoLoaded(false);
+                                        }}
+                                    >
+                                        <source src="/videos/step-2.mp4" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            ) : activeStep === 2 ? (
+                                // Show video for step 3
+                                <div className='relative'>
+                                    {!videoLoaded && (
+                                        <Image 
+                                            src={Agamify} 
+                                            alt="Loading..." 
+                                            width={800} 
+                                            height={350} 
+                                            className='rounded-lg shadow-2xl'
+                                        />
+                                    )}
+                                    <video
+                                        key="step-3-video"
+                                        width={800}
+                                        height={350}
+                                        autoPlay
+                                        muted
+                                        className={`rounded-lg shadow-2xl transition-opacity duration-500 ${
+                                            videoLoaded ? 'opacity-100' : 'opacity-0 absolute top-0 left-0'
+                                        }`}
+                                        onLoadedData={() => setVideoLoaded(true)}
+                                        onError={() => {
+                                            console.log('Step 3 video failed to load');
+                                            setVideoLoaded(false);
+                                        }}
+                                    >
+                                        <source src="/videos/step-3.mp4" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
                             ) : (
-                                // Show default image for other steps
+                                // Show default image for step 4
                                 <Image 
                                     src={Agamify} 
                                     alt="Agamify Logo" 
