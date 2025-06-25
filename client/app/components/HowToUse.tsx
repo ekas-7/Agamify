@@ -7,22 +7,22 @@ const steps = [
     {
         id: 1,
         title: "IMPORT YOUR REPO",
-        description: "Connect your GitHub and select the project you want to migrate. AGAMIFY supports React, Vue, Angular, Svelte, and Next.js."
+        description: "Connect your GitHub and select the project you want to migrate. AGAMIFY supports migration for any codebase, including frontend, backend, and full-stack projects."
     },
     {
         id: 2,
         title: "VISUALIZE YOUR APP",
-        description: "Get a comprehensive view of your application's structure, components, and dependencies in an interactive visual format."
+        description: "Get a comprehensive view of your application's structure, components, and dependencies in an interactive visual format—regardless of the tech stack."
     },
     {
         id: 3,
         title: "CHOOSE YOUR TARGET",
-        description: "Select your desired framework or technology stack for migration. Our AI will handle the complex transformation process."
+        description: "Select your desired framework, language, or technology stack for migration. Our AI will handle the complex transformation process for any type of project."
     },
     {
         id: 4,
         title: "MIGRATE YOUR CODE & PUSH ",
-        description: "Download your migrated code or deploy directly to your preferred hosting platform with just a few clicks."
+        description: "Download your migrated code or deploy directly to your preferred hosting platform with just a few clicks. Works for frontend, backend, and more."
     }
 ];
 
@@ -58,7 +58,7 @@ const HowToUse = () => {
                         How to Use Agamify
                     </h1>
                     <p className="text-lg text-white text-center max-w-4xl mx-auto mb-10 font-fustat font-light leading-relaxed">
-                        AGAMIFY isn&apos;t just for code migration. It&apos;s a versatile tool for learning, prototyping, modernizing, and comparing frontend architectures — all from a single platform.
+                        AGAMIFY isn&apos;t just for code migration. It&apos;s a versatile tool for learning, prototyping, modernizing, and comparing architectures—frontend, backend, or full-stack—all from a single platform.
                     </p>
                 </div>
                 <div className='flex items-center justify-center gap-10 py-16 h-[600px]'>                    {/* Left side - Steps */}
