@@ -32,10 +32,14 @@ const HowToUse = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setActiveStep((prev) => (prev + 1) % steps.length);
-        }, 5000);
+        }, 3000); // Increased interval for better readability
 
         return () => clearInterval(interval);
-    }, []);
+    }, [activeStep]);
+
+    const handleStepClick = (index: number) => {
+        setActiveStep(index);
+    };
 
     return (
         <section className="min-h-[1000px] flex flex-col items-center justify-center">
@@ -52,14 +56,14 @@ const HowToUse = () => {
                     <div className='flex-1 max-w-lg h-full flex justify-center overflow-hidden'>
                         <div className='relative my-auto'>
                             {/* Purple scrollbar track */}
-                            <div className='absolute left-0 top-0 w-1 h-full rounded-full'>
-                                {/* Scrollbar thumb - fixed height that moves to active step position */}
+                            <div className='absolute left-0 top-0 w-1 h-full  rounded-full'>
+                                {/* Scrollbar thumb - smooth animated indicator */}
                                 <div 
-                                    className='w-full bg-purple-500 rounded-full transition-all duration-1000 ease-in-out'
+                                    className='w-full bg-gradient-to-b from-purple-400 to-purple-600 rounded-full shadow-lg shadow-purple-500/30'
                                     style={{ 
                                         height: `${100 / steps.length}%`,
                                         transform: `translateY(${activeStep * 100}%)`,
-                                        transition: 'transform 1s ease-in-out'
+                                        transition: 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
                                     }}
                                 />
                             </div>
@@ -68,28 +72,35 @@ const HowToUse = () => {
                                 {steps.map((step, index) => (
                                     <div 
                                         key={step.id}
-                                        className={`relative transition-all duration-500 ease-in-out ${
-                                            activeStep === index ? 'opacity-100' : 'opacity-50'
+                                        className={`relative transform transition-all duration-800 ease-out ${
+                                            activeStep === index 
+                                                ? 'opacity-100 translate-x-0 scale-100' 
+                                                : 'opacity-70 translate-x-0 scale-95'
                                         }`}
+                                        onClick={() => handleStepClick(index)}
                                     >
                                         {/* Step content */}
-                                        <div className={`cursor-pointer transition-all duration-500 ${
-                                            activeStep === index ? 'transform scale-105' : ''
+                                        <div className={`cursor-pointer transform transition-all duration-700 ease-out ${
+                                            activeStep === index 
+                                                ? 'scale-100' 
+                                                : 'scale-98 hover:scale-100 hover:opacity-95'
                                         }`}>
-                                            <h3 className={`text-2xl font-bold font-jura uppercase tracking-wide mb-2.5 transition-colors duration-300 ${
-                                                activeStep === index ? 'text-[#F0D1FF]' : 'text-white'
+                                            <h3 className={`text-2xl font-bold font-jura uppercase tracking-wide mb-3 transition-all duration-700 ease ${
+                                                activeStep === index 
+                                                    ? 'text-[#F0D1FF] scale-105 translate-x-3' 
+                                                    : 'text-white scale-100 hover:scale-102 hover:translate-x-1 hover:transition-all hover:duration-500'
                                             }`}>
                                                 {step.title}
                                             </h3>
                                             
                                             <div 
-                                                className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                                                className={`overflow-hidden transform transition-all duration-700 ease-out ${
                                                     activeStep === index 
-                                                        ? 'max-h-32 opacity-100' 
-                                                        : 'max-h-0 opacity-0'
+                                                        ? 'max-h-40 opacity-100 scale-100 translate-y-0' 
+                                                        : 'max-h-0 opacity-0 scale-95 translate-y-2'
                                                 }`}
                                             >
-                                                <p className='text-gray-300 text-base font-fustat font-light leading-relaxed'>
+                                                <p className='text-gray-300 text-base font-fustat font-light leading-relaxed pt-1 transform transition-all duration-500 ease-out'>
                                                     {step.description}
                                                 </p>
                                             </div>
