@@ -83,7 +83,7 @@ export default function ExploreClient({ session, repos }: ExploreClientProps) {
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10 mb-8">
+        <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-6 border border-white/10 mb-8">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
@@ -131,7 +131,7 @@ export default function ExploreClient({ session, repos }: ExploreClientProps) {
 
         {/* Repository Grid */}
         {sortedRepos.length === 0 ? (
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-12 border border-white/10 text-center">
+          <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-12 border border-white/10 text-center">
             <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
               <svg className="w-8 h-8 text-white/60" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
@@ -147,7 +147,7 @@ export default function ExploreClient({ session, repos }: ExploreClientProps) {
             {sortedRepos.map((repo) => (
               <div
                 key={repo.githubId}
-                className="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-[#68A2FF]/25 transition-all duration-300 hover:bg-white/15 cursor-pointer"
+                className="group bg-white/10 backdrop-blur-sm rounded-[40px] p-6 border border-white/10 hover:border-[#68A2FF]/25 transition-all duration-300 hover:bg-white/15 cursor-pointer"
                 onClick={() => handleViewRepo(repo)}
               >
                 <div className="flex items-start justify-between mb-4">

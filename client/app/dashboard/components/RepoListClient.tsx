@@ -19,7 +19,7 @@ export default function RepoListClient({ repos }: { repos: Repo[] }) {
 
   if (repos.length === 0) {
     return (
-      <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-12 border border-white/10 text-center">
+      <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-12 border border-white/10 text-center">
         <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
           <svg className="w-8 h-8 text-white/60" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
@@ -57,7 +57,7 @@ export default function RepoListClient({ repos }: { repos: Repo[] }) {
       {repos.map((repo) => (
         <div
           key={repo.id}
-          className="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-[#68A2FF]/25 transition-all duration-300 hover:bg-white/15"
+          className="group bg-white/10 backdrop-blur-sm rounded-[40px] p-6 border border-white/10 hover:border-[#68A2FF]/25 transition-all duration-300 hover:bg-white/15"
         >
           <div className="flex items-center justify-between">
             <div className="flex-1">

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import type { IRepository } from "../../../../models/User";
 import AnotherGradient from "@/components/svg/anotherGradient.png";
+import PlantIcon from "@/components/svg/plant.svg";
 
 interface RepoPageClientProps {
   repo: IRepository;
@@ -192,7 +193,7 @@ package "Database" {
               href={repo.htmlUrl || '#'}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white/10 text-white px-4 py-2 rounded-full font-inter text-sm hover:bg-white/20 transition-colors flex items-center gap-2"
+              className="bg-white/10 text-white px-4 py-2 rounded-full font-inter uppercase text-sm hover:bg-white/20 transition-colors flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z" clipRule="evenodd" />
@@ -244,7 +245,7 @@ package "Database" {
           {activeTab === 'overview' && analysis && (
             <div className="space-y-8">
               {/* Tech Stack */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+              <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10">
                 <h2 className="text-2xl font-jura font-bold text-white mb-6 uppercase tracking-tighter">
                   Technology Stack
                 </h2>
@@ -261,7 +262,7 @@ package "Database" {
               </div>
 
               {/* Architecture Summary */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+              <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10">
                 <h2 className="text-2xl font-jura font-bold text-white mb-6 uppercase tracking-tighter">
                   Architecture Overview
                 </h2>
@@ -285,7 +286,7 @@ package "Database" {
               </div>
 
               {/* README */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+              <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10">
                 <h2 className="text-2xl font-jura font-bold text-white mb-6 uppercase tracking-tighter">
                   Documentation
                 </h2>
@@ -299,7 +300,7 @@ package "Database" {
           )}
 
           {activeTab === 'visualization' && analysis && (
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+            <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10">
               <h2 className="text-2xl font-jura font-bold text-white mb-6 uppercase tracking-tighter">
                 Architecture Visualization
               </h2>
@@ -312,7 +313,7 @@ package "Database" {
                       <div className="flex gap-2">
                         <button 
                           onClick={() => navigator.clipboard.writeText(analysis.plantuml)}
-                          className="bg-[#68A2FF] text-white px-4 py-2 rounded hover:bg-[#68A2FF]/80 transition-colors text-sm"
+                          className="bg-[#68A2FF20] text-white px-4 py-2 rounded-[40px] font-jura uppercase hover:bg-[#68A2FF]/80 transition-colors text-sm"
                         >
                           Copy Code
                         </button>
@@ -334,7 +335,7 @@ package "Database" {
                               alert('PlantUML diagram generated! Check console for details.');
                             });
                           }}
-                          className="bg-[#2D18FB] text-white px-4 py-2 rounded hover:bg-[#2D18FB]/80 transition-colors text-sm"
+                          className="bg-[#2D18FB] text-white px-4 py-2 rounded-[40px] hover:bg-[#2D18FB]/80 transition-colors text-sm"
                         >
                           Generate SVG
                         </button>
@@ -347,18 +348,15 @@ package "Database" {
                   
                   {/* Visualization Preview */}
                   <div className="bg-white rounded-lg p-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Architecture Preview</h3>
-                    <div className="bg-gray-100 rounded-lg p-8 text-center">
-                      <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <p className="text-gray-600 mb-4">Interactive diagram will render here</p>
-                      <div className="text-sm text-gray-500">
-                        PlantUML diagram visualization coming soon...
-                      </div>
-                    </div>
+                    <h3 className="text-2xl font-bold font-jura uppercase text-center w-full p-2 text-gray-800 mb-4">Architecture Preview</h3>
+                        <Image 
+                          src={PlantIcon} 
+                          alt="Architecture Plant Icon" 
+                          width={1200} 
+                      height={1200} 
+                      className='select-none cursor-pointer rounded-[40px] mx-auto'
+                        />
+                      
                   </div>
                 </div>
               ) : (
@@ -377,7 +375,7 @@ package "Database" {
 
           {activeTab === 'migration' && (
             <div className="space-y-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+              <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10">
                 <h2 className="text-2xl font-jura font-bold text-white mb-6 uppercase tracking-tighter">
                   Framework Migration
                 </h2>
@@ -390,7 +388,7 @@ package "Database" {
                     <div
                       key={framework.id}
                       onClick={() => setSelectedFramework(framework.id)}
-                      className={`p-6 rounded-2xl border-2 cursor-pointer transition-all duration-300 ${
+                      className={`p-6 rounded-[40px] border-2 cursor-pointer transition-all duration-300 ${
                         selectedFramework === framework.id
                           ? 'border-[#68A2FF] bg-[#68A2FF]/10'
                           : 'border-white/10 bg-white/5 hover:border-white/20'

@@ -70,7 +70,7 @@ export default function DashboardClient({ session, repos }: DashboardClientProps
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-[#68A2FF]/25 transition-all duration-300">
+          <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10 hover:border-[#68A2FF]/25 transition-all duration-300">
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-[#68A2FF] to-[#2D18FB] rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -83,7 +83,7 @@ export default function DashboardClient({ session, repos }: DashboardClientProps
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-[#68A2FF]/25 transition-all duration-300">
+          <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10 hover:border-[#68A2FF]/25 transition-all duration-300">
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-[#F0D1FF] to-[#68A2FF] rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -96,7 +96,7 @@ export default function DashboardClient({ session, repos }: DashboardClientProps
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-[#68A2FF]/25 transition-all duration-300">
+          <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10 hover:border-[#68A2FF]/25 transition-all duration-300">
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-[#2D18FB] to-[#F0D1FF] rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -140,7 +140,7 @@ export default function DashboardClient({ session, repos }: DashboardClientProps
             <h2 className="text-3xl font-bold font-jura text-white uppercase tracking-tighter mb-8">
               Recent Activity
             </h2>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+            <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10">
               <div className="text-center py-12">
                 <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-white/60" fill="currentColor" viewBox="0 0 20 20">

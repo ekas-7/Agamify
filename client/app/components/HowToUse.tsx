@@ -28,13 +28,22 @@ const steps = [
 
 const HowToUse = () => {
     const [activeStep, setActiveStep] = useState(0);
+    const [videoLoaded, setVideoLoaded] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
             setActiveStep((prev) => (prev + 1) % steps.length);
-        }, 3000); // Increased interval for better readability
+        }, 5000); // Increased interval for better readability
 
         return () => clearInterval(interval);
+    }, [activeStep]);
+
+    // Reset video loading state when step changes
+    useEffect(() => {
+        if (activeStep === 0) {
+            // Reset video loading when we come back to step 1
+            setVideoLoaded(false);
+        }
     }, [activeStep]);
 
     const handleStepClick = (index: number) => {
@@ -111,17 +120,51 @@ const HowToUse = () => {
                         </div>
                     </div>
                     
-                    {/* Right side - Image */}
+                    {/* Right side - Image/Video */}
                     <div className='flex-1 flex justify-center items-center my-auto h-full'>
                         <div className='relative'>
-                            <Image 
-                                src={Agamify} 
-                                alt="Agamify Logo" 
-                                width={800} 
-                                height={350} 
-                                className='rounded-lg shadow-2xl'
-                            />
-                            {/* Optional: Add a subtle animation to the image */}
+                            {activeStep === 0 ? (
+                                // Show video for step 1
+                                <div className='relative'>
+                                    {!videoLoaded && (
+                                        <Image 
+                                            src={Agamify} 
+                                            alt="Loading..." 
+                                            width={800} 
+                                            height={350} 
+                                            className='rounded-lg shadow-2xl'
+                                        />
+                                    )}
+                                    <video
+                                        key="step-1-video"
+                                        width={800}
+                                        height={350}
+                                        autoPlay
+                                        muted
+                                        className={`rounded-lg shadow-2xl transition-opacity duration-500 ${
+                                            videoLoaded ? 'opacity-100' : 'opacity-0 absolute top-0 left-0'
+                                        }`}
+                                        onLoadedData={() => setVideoLoaded(true)}
+                                        onError={() => {
+                                            console.log('Video failed to load');
+                                            setVideoLoaded(false);
+                                        }}
+                                    >
+                                        <source src="/videos/step-1.mp4" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            ) : (
+                                // Show default image for other steps
+                                <Image 
+                                    src={Agamify} 
+                                    alt="Agamify Logo" 
+                                    width={800} 
+                                    height={350} 
+                                    className='rounded-lg shadow-2xl'
+                                />
+                            )}
+                            {/* Optional: Add a subtle animation overlay */}
                             <div className='absolute inset-0 bg-gradient-to-r from-purple-500/5 to-blue-500/5 rounded-lg animate-pulse' />
                         </div>
                     </div>

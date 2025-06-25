@@ -157,7 +157,7 @@ export default function ConnectRepoButton() {
           }}
         >
           <div 
-            className={`bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col transform transition-all duration-300 ${
+            className={`bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/20 max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col transform transition-all duration-300 ${
               showImportModal ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
             }`}
           >

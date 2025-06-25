@@ -32,46 +32,126 @@ export async function POST(request: NextRequest) {
       },
       plantuml: `@startuml
 !theme plain
-title Repository Architecture
+title Chat-App Detailed System Architecture
 
-package "Frontend" {
-  [React Components]
+skinparam componentStyle rectangle
+
+' Internet/CDN Layer
+package "Internet & CDN Layer" {
+  [CloudFlare CDN]
+  [DNS Resolution]
+  [SSL/TLS Termination]
+  [Load Balancing]
+  [DDoS Protection]
+}
+
+' Client Layer
+package "Client Layer" {
+  [React Frontend Application]
+  [UI Components]
   [State Management]
-  [API Client]
-  [Styling]
+  [Client Services]
 }
 
-package "Backend" {
-  [Express Server]
-  [API Routes]
-  [Middleware]
-  [Authentication]
+' Reverse Proxy Layer
+package "Reverse Proxy & LB" {
+  [Nginx/HAProxy]
+  [Rate Limiting]
 }
 
-package "Database" {
-  [MongoDB]
-  [User Schema]
-  [Data Models]
+' API Gateway
+package "API Gateway Layer" {
+  [Request Router]
+  [Auth Gateway]
 }
 
-package "External Services" {
-  [GitHub API]
-  [AI Services]
+' Monitoring & Observability
+package "Monitoring & Observability" {
+  [Prometheus]
+  [Grafana]
+  [ELK Stack]
 }
 
-[React Components] --> [State Management] : uses
-[React Components] --> [API Client] : calls
-[React Components] --> [Styling] : applies
-[API Client] --> [Express Server] : HTTP requests
-[Express Server] --> [API Routes] : routes to
-[Express Server] --> [Middleware] : uses
-[API Routes] --> [Authentication] : validates
-[API Routes] --> [MongoDB] : queries
-[MongoDB] --> [User Schema] : contains
-[MongoDB] --> [Data Models] : stores
-[Express Server] --> [GitHub API] : integrates
-[Express Server] --> [AI Services] : calls
+' Backend Services
+package "Backend Services Layer" {
+  [Express API Server]
+  [Socket.IO Server]
+  [File Storage/CDN]
+  [Message Queue/Event Bus]
+  [Cache & Session Layer]
+}
 
+' Internal Backend Details (flattened for PlantUML)
+[API Routes]
+[Middleware]
+[Controllers]
+[Business Logic Services]
+
+[Socket Events]
+[Room Management]
+[Broadcasting]
+[Realtime Features]
+
+[File Operations]
+[Storage Services]
+[CDN Services]
+[File Sharing Features]
+
+[Redis Queue]
+[Event Bus]
+[Notifications]
+[Async Processing Events]
+
+[Redis Cache]
+[In-Memory Cache]
+[Performance Optimization]
+
+' Database
+package "Database Layer" {
+  [MongoDB Primary]
+  [Collections]
+  [Indexes]
+}
+
+' Connections
+[CloudFlare CDN] --> [React Frontend Application]
+[React Frontend Application] --> [Nginx/HAProxy]
+[Nginx/HAProxy] --> [Request Router]
+[Request Router] --> [Express API Server]
+[Request Router] --> [Socket.IO Server]
+[Request Router] --> [File Storage/CDN]
+[Request Router] --> [Redis Queue]
+[Request Router] --> [Redis Cache]
+
+[Express API Server] --> [API Routes]
+[Express API Server] --> [Middleware]
+[Express API Server] --> [Controllers]
+[Express API Server] --> [Business Logic Services]
+[Express API Server] --> [MongoDB Primary]
+
+[Socket.IO Server] --> [Socket Events]
+[Socket.IO Server] --> [Room Management]
+[Socket.IO Server] --> [Broadcasting]
+[Socket.IO Server] --> [Realtime Features]
+[Socket.IO Server] --> [MongoDB Primary]
+
+[File Storage/CDN] --> [File Operations]
+[File Storage/CDN] --> [Storage Services]
+[File Storage/CDN] --> [CDN Services]
+[File Storage/CDN] --> [File Sharing Features]
+[File Storage/CDN] --> [MongoDB Primary]
+
+[Message Queue/Event Bus] --> [Redis Queue]
+[Message Queue/Event Bus] --> [Event Bus]
+[Message Queue/Event Bus] --> [Notifications]
+[Message Queue/Event Bus] --> [Async Processing Events]
+
+[Cache & Session Layer] --> [Redis Cache]
+[Cache & Session Layer] --> [In-Memory Cache]
+[Cache & Session Layer] --> [Performance Optimization]
+
+[MongoDB Primary] --> [Collections]
+[MongoDB Primary] --> [Indexes]
 @enduml`,
       migrationOptions: ["react", "vue", "angular", "svelte", "nextjs"],
     };

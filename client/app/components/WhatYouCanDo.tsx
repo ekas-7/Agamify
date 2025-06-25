@@ -59,7 +59,7 @@ const WhatYouCanDo = () => {
                 <Image
                     src={anotherGradient}
                     alt=""
-                    className="object-cover"
+                    className="object-cover select-none pointer-events-none"
                     priority
                 />
             </div>
@@ -79,13 +79,13 @@ const WhatYouCanDo = () => {
                     {featureCards.map((card) => (
                         <div
                             key={card.id}
-                            className="w-full h-[350px] bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-[#68A2FF]/25 cursor-pointer select-none transition-all duration-300 flex flex-col items-center justify-center text-center relative group"
+                            className="w-full h-[350px] bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10 hover:border-[#68A2FF]/25 cursor-pointer select-none transition-all duration-300 flex flex-col items-center justify-center text-center relative group"
                             style={{
                                 background: "rgba(255, 255, 255, 0.1)",
                             }}
                         >
                             {/* Gradient border on hover */}
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl bg-gradient-to-b from-[#F0D1FF]/5 via-[#68A2FF]/5 to-[#2D18FB]/5"></div>
+                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[40px] bg-gradient-to-b from-[#F0D1FF]/5 via-[#68A2FF]/5 to-[#2D18FB]/5"></div>
                             <div className="relative z-10 flex flex-col items-center justify-center text-center h-full">
                                 <div className="w-24 h-24 flex items-center justify-center mb-10 relative">
                                     <Image
