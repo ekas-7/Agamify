@@ -21,7 +21,7 @@ const steps = [
     },
     {
         id: 4,
-        title: "DEPLOY & MIGRATE",
+        title: "MIGRATE YOUR CODE & PUSH ",
         description: "Download your migrated code or deploy directly to your preferred hosting platform with just a few clicks."
     }
 ];
