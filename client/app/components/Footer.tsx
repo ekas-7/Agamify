@@ -12,7 +12,7 @@ const Footer = () => {
                 <Image
                     src={FooterGradient}
                     alt="Footer gradient background"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover pointer-events-none select-none"
                     style={{ objectFit: "cover" }}
                 />
             </div>

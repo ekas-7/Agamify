@@ -53,7 +53,7 @@ const Hero = () => {
                 <Image
                     src={HeroGradient}
                     alt="Hero gradient background"
-                    className="w-full h-screen object-cover"
+                    className="w-full h-screen object-cover pointer-events-none select-none"
                     style={{ objectFit: "cover" }}
                 />
             </div>

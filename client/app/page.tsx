@@ -11,7 +11,6 @@ export default function LandingPage() {
             <HowToUse />
             <WhatYouCanDo />
             <Pricing />
-            <Footer />
         </main>
     );
 }
