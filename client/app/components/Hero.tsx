@@ -26,7 +26,7 @@ const Hero = () => {
                 <div>
                     <div className="flex flex-col gap-5 justify-center items-center text-center">
                         <h1 className="text-6xl font-bold font-jura text-white text-center tracking-tighter uppercase flex-1 w-full">
-                            Migrate frontend code <br /> across frameworks.
+                            Migrate Visualize Understand  <br />code across frameworks.
                             Instantly.
                         </h1>
                         <p className="max-w-3xl text-white/70 text-center font-fustat text-xl mx-auto">

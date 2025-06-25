@@ -1,6 +1,11 @@
 import anotherGradient from "@/components/svg/anotherGradient.png";
 import PolygonSVG from "@/components/svg/Polygon.svg";
 import ComputerSVG from "@/components/svg/computer.svg";
+import chip from "@/components/svg/chip.svg";
+import eduaction from "@/components/svg/education.svg";
+import stack from "@/components/svg/stack.svg";
+import modren from "@/components/svg/modren.svg";
+import team from "@/components/svg/team.svg";
 import Image from "next/image";
 
 const WhatYouCanDo = () => {
@@ -17,35 +22,35 @@ const WhatYouCanDo = () => {
             title: "Rapid Prototyping",
             description:
                 "Build components once, then instantly generate equivalents in multiple frameworks for fast testing and iteration.",
-            foregroundIcon: ComputerSVG,
+            foregroundIcon: chip,
         },
         {
             id: "developer-education",
             title: "Developer Education",
             description:
                 "Explore how different frameworks handle the same logic with side-by-side code and visual mapping.",
-            foregroundIcon: ComputerSVG,
+            foregroundIcon: eduaction,
         },
         {
             id: "framework-benchmarking",
             title: "Framework Benchmarking",
             description:
                 "Compare structure, performance, and readability across implementations — helpful for teams choosing a tech stack.",
-            foregroundIcon: ComputerSVG,
+            foregroundIcon: stack,
         },
         {
             id: "modernize-legacy",
             title: "Modernize Legacy Code",
             description:
                 "Refactor and migrate older projects into cleaner, more maintainable codebases in modern frameworks.",
-            foregroundIcon: ComputerSVG,
+            foregroundIcon: modren,
         },
         {
             id: "team-collaboration",
             title: "Team Collaboration",
             description:
                 "Ensure clean architecture and consistency across teams by visualizing component structures and migrating shared libraries to preferred frameworks.",
-            foregroundIcon: ComputerSVG,
+            foregroundIcon: team,
         },
     ];    return (
         <section className="min-h-[1000px] flex flex-col items-center justify-center relative">
