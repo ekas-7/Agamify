@@ -18,7 +18,7 @@ interface GitHubRepo {
 export default function ConnectRepoButton() {
   const [showImportModal, setShowImportModal] = useState(false);
   const [availableRepos, setAvailableRepos] = useState<GitHubRepo[]>([]);
-  const [importedRepos, setImportedRepos] = useState<Set<string>>(new Set());
+  const [importedRepos, setImportedRepos] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(false);
   const [importing, setImporting] = useState(false);
   const [selectedRepos, setSelectedRepos] = useState<Set<number>>(new Set());
@@ -28,10 +28,10 @@ export default function ConnectRepoButton() {
       const response = await fetch('/api/user-repos');
       if (response.ok) {
         const userRepos = await response.json();
-        const importedRepoNames = new Set(
-          Array.isArray(userRepos) ? userRepos.map((repo: any) => repo.name) : []
+        const importedRepoIds = new Set(
+          Array.isArray(userRepos) ? userRepos.map((repo: any) => repo.githubId) : []
         );
-        setImportedRepos(importedRepoNames);
+        setImportedRepos(importedRepoIds);
       }
     } catch (error) {
       console.error('Failed to fetch imported repositories:', error);
@@ -41,84 +41,17 @@ export default function ConnectRepoButton() {
   const fetchGitHubRepos = async () => {
     setLoading(true);
     try {
-      // This would call GitHub API to get user's repositories
       const response = await fetch('/api/github-repos');
       if (response.ok) {
         const repos = await response.json();
         setAvailableRepos(repos);
       } else {
-        // Fallback with mock data for demo
-        setAvailableRepos([
-          {
-            id: 1,
-            name: "my-react-app",
-            full_name: "username/my-react-app",
-            description: "A React application with modern features",
-            html_url: "https://github.com/username/my-react-app",
-            clone_url: "https://github.com/username/my-react-app.git",
-            private: false,
-            language: "TypeScript",
-            updated_at: "2024-01-15T10:30:00Z"
-          },
-          {
-            id: 2,
-            name: "vue-dashboard",
-            full_name: "username/vue-dashboard",
-            description: "Vue.js dashboard with analytics",
-            html_url: "https://github.com/username/vue-dashboard",
-            clone_url: "https://github.com/username/vue-dashboard.git",
-            private: false,
-            language: "Vue",
-            updated_at: "2024-01-10T15:45:00Z"
-          },
-          {
-            id: 3,
-            name: "angular-ecommerce",
-            full_name: "username/angular-ecommerce",
-            description: "E-commerce platform built with Angular",
-            html_url: "https://github.com/username/angular-ecommerce",
-            clone_url: "https://github.com/username/angular-ecommerce.git",
-            private: true,
-            language: "TypeScript",
-            updated_at: "2024-01-05T09:20:00Z"
-          },
-          {
-            id: 4,
-            name: "svelte-portfolio",
-            full_name: "username/svelte-portfolio",
-            description: "Personal portfolio website using Svelte",
-            html_url: "https://github.com/username/svelte-portfolio",
-            clone_url: "https://github.com/username/svelte-portfolio.git",
-            private: false,
-            language: "Svelte",
-            updated_at: "2023-12-28T14:10:00Z"
-          },
-          {
-            id: 5,
-            name: "nextjs-ecommerce",
-            full_name: "username/nextjs-ecommerce",
-            description: "E-commerce platform built with Next.js and Stripe",
-            html_url: "https://github.com/username/nextjs-ecommerce",
-            clone_url: "https://github.com/username/nextjs-ecommerce.git",
-            private: false,
-            language: "JavaScript",
-            updated_at: "2023-12-20T16:25:00Z"
-          },
-          {
-            id: 6,
-            name: "python-api",
-            full_name: "username/python-api",
-            description: "RESTful API built with FastAPI and PostgreSQL",
-            html_url: "https://github.com/username/python-api",
-            clone_url: "https://github.com/username/python-api.git",
-            private: true,
-            language: "Python",
-            updated_at: "2023-11-15T12:00:00Z"
-          }
-        ]);
+        console.error('Failed to fetch GitHub repositories');
+        setAvailableRepos([]);
       }
     } catch (error) {
       console.error('Failed to fetch GitHub repositories:', error);
+      setAvailableRepos([]);
     } finally {
       setLoading(false);
     }
@@ -129,17 +62,18 @@ export default function ConnectRepoButton() {
     
     setImporting(true);
     try {
-      const reposToImport = availableRepos.filter(repo => selectedRepos.has(repo.id));
+      const repoIds = Array.from(selectedRepos);
       
-      for (const repo of reposToImport) {
-        await fetch('/api/sync-github', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            repoUrl: repo.html_url,
-            repoData: repo 
-          })
-        });
+      const response = await fetch('/api/import-repos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ repoIds })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.error || 'Failed to import repositories');
+        return;
       }
       
       // Close modal with smooth transition
@@ -165,6 +99,13 @@ export default function ConnectRepoButton() {
     if (newSelection.has(repoId)) {
       newSelection.delete(repoId);
     } else {
+      // Free tier limit: check total repos after import
+      const totalAfterSelection = importedRepos.size + newSelection.size + 1;
+      if (totalAfterSelection > 3) {
+        const remaining = 3 - importedRepos.size;
+        alert(`Free tier allows up to 3 repositories total. You currently have ${importedRepos.size} imported. You can only select ${remaining} more repositories.`);
+        return;
+      }
       newSelection.add(repoId);
     }
     setSelectedRepos(newSelection);
@@ -201,7 +142,7 @@ export default function ConnectRepoButton() {
   }, []);
 
   // Filter out already imported repos
-  const availableForImport = availableRepos.filter(repo => !importedRepos.has(repo.name));
+  const availableForImport = availableRepos.filter(repo => !importedRepos.has(repo.id));
 
   if (showImportModal) {
     return (
@@ -221,7 +162,12 @@ export default function ConnectRepoButton() {
             }`}
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-jura font-bold text-white">Import from GitHub</h2>
+              <div>
+                <h2 className="text-2xl font-jura font-bold text-white">Import from GitHub</h2>
+                <p className="text-white/60 text-sm font-fustat mt-1">
+                  Free tier: {importedRepos.size + selectedRepos.size}/3 repositories ({3 - importedRepos.size} slots remaining)
+                </p>
+              </div>
               <button
                 onClick={handleCloseModal}
                 className="text-white/60 hover:text-white transition-colors"
@@ -243,8 +189,7 @@ export default function ConnectRepoButton() {
                   {availableForImport.map((repo) => (
                     <div
                       key={repo.id}
-                      onClick={() => toggleRepoSelection(repo.id)}
-                      className={`p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
+                      className={`p-4 rounded-lg border cursor-pointer select-none transition-all duration-200 ${
                         selectedRepos.has(repo.id)
                           ? 'bg-[#68A2FF]/20 border-[#68A2FF]/50'
                           : 'bg-white/5 border-white/10 hover:bg-white/10'
@@ -253,11 +198,14 @@ export default function ConnectRepoButton() {
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-200 ${
-                              selectedRepos.has(repo.id)
-                                ? 'bg-[#68A2FF] border-[#68A2FF]'
-                                : 'border-white/30'
-                            }`}>
+                            <div 
+                              onClick={() => toggleRepoSelection(repo.id)}
+                              className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-200 cursor-pointer ${
+                                selectedRepos.has(repo.id)
+                                  ? 'bg-[#68A2FF] border-[#68A2FF]'
+                                  : 'border-white/30 hover:border-white/50'
+                              }`}
+                            >
                               {selectedRepos.has(repo.id) && (
                                 <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />

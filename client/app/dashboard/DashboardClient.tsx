@@ -4,7 +4,6 @@ import React from 'react';
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import RepoListClient from './components/RepoListClient';
-import LogoutButton from './components/LogoutButton';
 import ConnectRepoButton from './components/ConnectRepoButton';
 import type { Session } from "next-auth";
 import type { IRepository } from "../../models/User";
@@ -33,7 +32,7 @@ export default function DashboardClient({ session, repos }: DashboardClientProps
   }
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white relative overflow-hidden mb-52">
       {/* Background gradient */}
       <div className="absolute inset-0 flex items-center justify-center">
         <Image
@@ -67,7 +66,6 @@ export default function DashboardClient({ session, repos }: DashboardClientProps
           >
             EXPLORE REPOS
           </button>
-          <LogoutButton />
         </div>
 
         {/* Stats Overview */}
@@ -81,7 +79,7 @@ export default function DashboardClient({ session, repos }: DashboardClientProps
               </div>
               <h3 className="text-2xl font-jura font-bold text-white mb-2">Repositories</h3>
               <p className="text-4xl font-bold text-[#68A2FF] mb-2">{repos.length}</p>
-              <p className="text-white/60 text-sm font-fustat">Connected repos</p>
+              <p className="text-white/60 text-sm font-fustat">Imported repos</p>
             </div>
           </div>
 

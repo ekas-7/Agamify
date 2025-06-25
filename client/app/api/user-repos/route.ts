@@ -14,11 +14,11 @@ export async function GET(request: NextRequest) {
 
     await dbConnect();
     
-    // Find the user and return their repositories array
+    // Find the user and return their imported repositories array only
     const user = await User.findById(session.user.id).lean();
-    const repositories = user?.repositories || [];
+    const importedRepositories = user?.importedRepositories || [];
     
-    return NextResponse.json(repositories);
+    return NextResponse.json(importedRepositories);
   } catch (error) {
     console.error("User repos API error:", error);
     return NextResponse.json(

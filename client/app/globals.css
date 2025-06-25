@@ -60,12 +60,6 @@ html, body {
   transition-duration: 150ms;
 }
 
-/* Focus styles */
-*:focus {
-  outline: 2px solid rgba(104, 162, 255, 0.5);
-  outline-offset: 2px;
-}
-
 /* Selection styles */
 ::selection {
   background: rgba(104, 162, 255, 0.3);

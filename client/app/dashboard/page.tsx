@@ -1,16 +1,19 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/authOptions";
-import { getUserRepositories } from "../actions/getUserRepositories";
+import { getImportedRepositories } from "../actions/getImportedRepositories";
 import DashboardClient from "./DashboardClient";
 import type { IRepository } from "../../models/User";
 
 export default async function DashboardPage() {
   // Get session on the server
   const session = await getServerSession(authOptions);
-  let repos: Array<IRepository> = [];
+  
+  // Start with empty imported repos - user needs to import them
+  let importedRepos: Array<IRepository> = [];
+  
   if (session && session.user?.id) {
-    const rawRepos = await getUserRepositories();
-    repos = Array.isArray(rawRepos)
+    const rawRepos = await getImportedRepositories();
+    importedRepos = Array.isArray(rawRepos)
       ? JSON.parse(JSON.stringify(rawRepos)).map((repo: IRepository) => ({
           id: repo.githubId?.toString() ?? "",
           githubId: repo.githubId ?? "",
@@ -22,5 +25,6 @@ export default async function DashboardPage() {
         }))
       : [];
   }
-  return <DashboardClient session={session} repos={repos} />;
+  
+  return <DashboardClient session={session} repos={importedRepos} />;
 }

@@ -17,7 +17,8 @@ export interface IUser extends Document {
   githubId: string;
   githubUsername: string;
   avatarUrl?: string;
-  repositories: IRepository[];
+  repositories: IRepository[]; // All GitHub repositories (for import popup)
+  importedRepositories: IRepository[]; // Only imported repositories (for dashboard)
   githubAccessToken?: string;
 }
 
@@ -37,7 +38,8 @@ const UserSchema: Schema<IUser> = new Schema({
   githubId: { type: String, required: true, unique: true },
   githubUsername: { type: String, required: true },
   avatarUrl: { type: String },
-  repositories: { type: [RepositorySchema], default: [] },
+  repositories: { type: [RepositorySchema], default: [] }, // All GitHub repositories
+  importedRepositories: { type: [RepositorySchema], default: [] }, // Only imported ones
   githubAccessToken: { type: String },
 });
 

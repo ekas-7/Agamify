@@ -25,13 +25,29 @@ export default function RepoListClient({ repos }: { repos: Repo[] }) {
             <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
           </svg>
         </div>
-        <h3 className="text-2xl font-jura font-bold text-white mb-4">No Repositories Found</h3>
-        <p className="text-white/60 font-fustat mb-8">
-          Import your GitHub repositories to start analyzing and migrating your projects.
+        <h3 className="text-2xl font-jura font-bold text-white mb-4">No Repositories Imported</h3>
+        <p className="text-white/60 font-fustat mb-6">
+          Get started by importing your GitHub repositories. Your free tier includes up to 3 repositories.
         </p>
-        <p className="text-white/40 font-fustat text-sm">
-          Click "Import Repositories" above to get started.
-        </p>
+        <div className="bg-white/5 rounded-lg p-4 mb-8">
+          <p className="text-white/40 font-fustat text-sm">
+            💡 <strong>Pro tip:</strong> Click "IMPORT REPO" above to browse and select your GitHub repositories for analysis and migration.
+          </p>
+        </div>
+        <div className="flex items-center justify-center gap-4 text-white/30 text-sm font-fustat">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#68A2FF] rounded-full"></div>
+            <span>Free Tier: 3 repos</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#F0D1FF] rounded-full"></div>
+            <span>Architecture Analysis</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#2D18FB] rounded-full"></div>
+            <span>Framework Migration</span>
+          </div>
+        </div>
       </div>
     );
   }

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import type { Session } from "next-auth";
 import type { IRepository } from "../../../models/User";
-import HeroGradient from "@/components/svg/heroGradient.png";
 
 interface ExploreClientProps {
   session: Session | null;
@@ -57,16 +56,6 @@ export default function ExploreClient({ session, repos }: ExploreClientProps) {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Image
-          src={HeroGradient}
-          alt="Explore gradient background"
-          className="w-full h-full object-cover opacity-30"
-          style={{ objectFit: "cover" }}
-        />
-      </div>
-
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
