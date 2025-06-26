@@ -1,13 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../lib/authOptions";
+import dbConnect from "../../../lib/mongoose";
+import { User } from "../../../models/User";
 
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!session || !session.user?.email) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    }
+
+    await dbConnect();
+
+    // Check if user is a beta tester
+    const user = await User.findOne(
+      { email: session.user.email },
+      { isBetaTester: 1 }
+    );
+
+    if (!user?.isBetaTester) {
+      return NextResponse.json(
+        { error: "Under Beta Development. Sign in to get notified when this feature becomes available." },
+        { status: 503 }
+      );
     }
 
     const { git_url, language, code_folder, auth_token, max_depth, include_external } = await request.json();

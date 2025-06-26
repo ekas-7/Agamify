@@ -6,6 +6,7 @@ import Image from "next/image";
 import type { IRepository } from "../../../../models/User";
 import AnotherGradient from "@/components/svg/anotherGradient.png";
 import PlantIcon from "@/components/svg/plant.svg";
+import BetaGate from "@/components/BetaGate";
 
 interface RepoPageClientProps {
   repo: IRepository;
@@ -241,8 +242,9 @@ package "Database" {
         </div>
 
         {/* Content */}
-        <div className="space-y-8">
-          {activeTab === 'overview' && analysis && (
+        <BetaGate feature="repository analysis and migration" showAsCard={true}>
+          <div className="space-y-8">
+            {activeTab === 'overview' && analysis && (
             <div className="space-y-8">
               {/* Tech Stack */}
               <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10">
@@ -424,7 +426,8 @@ package "Database" {
               </div>
             </div>
           )}
-        </div>
+          </div>
+        </BetaGate>
       </div>
     </div>
   );

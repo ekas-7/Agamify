@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Session } from "next-auth";
 import type { IRepository } from "../../../models/User";
+import BetaPopup from "@/components/BetaPopup";
 
 interface ExploreClientProps {
   session: Session | null;
@@ -18,6 +19,7 @@ export default function ExploreClient({ session, repos }: ExploreClientProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
   const [sort, setSort] = useState<SortType>('name');
+  const [showBetaPopup, setShowBetaPopup] = useState(false);
 
   if (!session) {
     router.push("/");
@@ -189,7 +191,7 @@ export default function ExploreClient({ session, repos }: ExploreClientProps) {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleViewRepo(repo);
+                      setShowBetaPopup(true);
                     }}
                     className="flex-1 bg-white/10 text-white px-3 py-2 rounded-full font-inter text-sm hover:bg-white/20 transition-colors text-center"
                   >
@@ -221,6 +223,12 @@ export default function ExploreClient({ session, repos }: ExploreClientProps) {
           </div>
         )}
       </div>
+      
+      {/* Beta Popup */}
+      <BetaPopup 
+        isOpen={showBetaPopup} 
+        onClose={() => setShowBetaPopup(false)} 
+      />
     </div>
   );
 }

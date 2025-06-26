@@ -1,17 +1,17 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../../../lib/authOptions";
-import { notFound } from "next/navigation";
+"use client";
 
-export default async function RepoPage() {
-  const session = await getServerSession(authOptions);
-  
-  if (!session) {
-    return notFound();
-  }
+import React from "react";
 
-  // Block access to repo analysis completely
+interface BetaPopupProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function BetaPopup({ isOpen, onClose }: BetaPopupProps) {
+  if (!isOpen) return null;
+
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white/10 backdrop-blur-md rounded-[40px] p-8 border border-white/20 max-w-md w-full text-center">
         <div className="w-16 h-16 bg-gradient-to-r from-[#68A2FF] to-[#2D18FB] rounded-full flex items-center justify-center mx-auto mb-6">
           <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -24,15 +24,15 @@ export default async function RepoPage() {
         </h3>
         
         <p className="text-white/70 font-fustat mb-6 leading-relaxed">
-          Repository analysis is currently under development. Sign in to get notified when it becomes available.
+          This feature is currently under development. Sign in to get notified when it becomes available.
         </p>
         
-        <a
-          href="/dashboard"
-          className="inline-block w-full bg-gradient-to-r from-[#68A2FF] to-[#2D18FB] text-white px-6 py-3 rounded-full font-inter font-medium hover:opacity-90 transition-opacity"
+        <button
+          onClick={onClose}
+          className="w-full bg-gradient-to-r from-[#68A2FF] to-[#2D18FB] text-white px-6 py-3 rounded-full font-inter font-medium hover:opacity-90 transition-opacity"
         >
-          Back to Dashboard
-        </a>
+          Got it
+        </button>
       </div>
     </div>
   );

@@ -1,72 +1,61 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSession, signIn } from "next-auth/react";
-import Hero from "./components/Hero";
-import HowToUse from "./components/HowToUse";
-import WhatYouCanDo from "./components/WhatYouCanDo";
-import Pricing from "./components/Pricing";
-import BetaMarquee from "./components/BetaMarquee";
+import { useBetaStatus } from "@/hooks/useBetaStatus";
 
-export default function LandingPage() {
+interface BetaGateProps {
+    children: React.ReactNode;
+    feature?: string;
+    showAsCard?: boolean;
+}
+
+const BetaGate = ({ children, feature = "feature", showAsCard = false }: BetaGateProps) => {
+    const { status } = useSession();
+    const { isBetaTester, loading } = useBetaStatus();
     const [showBetaPopup, setShowBetaPopup] = useState(false);
     const [email, setEmail] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const { data: session, status } = useSession();
 
-    // Check if user is first-time visitor and show beta popup
-    useEffect(() => {
-        const hasVisited = localStorage.getItem('agamify-visited');
-        if (!hasVisited) {
-            // Show popup after 3 seconds for better UX
-            const timer = setTimeout(() => {
-                setShowBetaPopup(true);
-            }, 3000);
-            return () => clearTimeout(timer);
-        }
-    }, []);
+    // If loading, show a loading state
+    if (loading || status === "loading") {
+        return showAsCard ? (
+            <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10 text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F0D1FF] mx-auto"></div>
+                <p className="text-white/70 font-fustat mt-4">Checking access...</p>
+            </div>
+        ) : (
+            <div className="flex items-center justify-center p-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F0D1FF]"></div>
+            </div>
+        );
+    }
 
-    // Set email from session when available
-    useEffect(() => {
-        if (session?.user?.email && !email) {
-            setEmail(session.user.email);
-        }
-    }, [session, email]);
+    // If user is a beta tester, show the feature
+    if (isBetaTester) {
+        return <>{children}</>;
+    }
 
+    // Beta signup logic
     const handleBetaSignup = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email) return;
 
-        // Store email before GitHub authentication for tracking
+        // If not authenticated, sign in with GitHub first
         if (status !== "authenticated") {
             try {
-                // Store the email first
                 await fetch('/api/pre-signup', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email }),
                 });
                 
-                // Then redirect to GitHub sign-in
                 await signIn("github", { 
-                    callbackUrl: `${window.location.origin}?joinBeta=true&email=${encodeURIComponent(email)}` 
+                    callbackUrl: `${window.location.origin}${window.location.pathname}?joinBeta=true&email=${encodeURIComponent(email)}` 
                 });
                 return;
             } catch (error) {
                 console.error("Pre-signup storage failed:", error);
-                // Continue with GitHub sign-in even if storage fails
-                try {
-                    await signIn("github", { 
-                        callbackUrl: `${window.location.origin}?joinBeta=true&email=${encodeURIComponent(email)}` 
-                    });
-                    return;
-                } catch (signInError) {
-                    console.error("GitHub sign-in failed:", signInError);
-                    alert("Failed to sign in with GitHub. Please try again.");
-                    return;
-                }
             }
         }
 
@@ -74,9 +63,7 @@ export default function LandingPage() {
         try {
             const response = await fetch('/api/beta-signup', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),
             });
 
@@ -84,67 +71,69 @@ export default function LandingPage() {
 
             if (response.ok) {
                 setSubmitted(true);
-                localStorage.setItem('agamify-visited', 'true');
-                localStorage.setItem('agamify-beta-joined', 'true');
-                
-                // Close popup after showing success message
                 setTimeout(() => {
-                    setShowBetaPopup(false);
-                    setSubmitted(false);
-                }, 3000);
+                    window.location.reload(); // Refresh to update beta status
+                }, 2000);
             } else {
                 throw new Error(data.error || 'Failed to join beta');
             }
         } catch (error) {
-            console.error("Beta signup error:", error);
             alert(`Failed to join beta: ${error instanceof Error ? error.message : 'Unknown error'}`);
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    const handleJoinBetaFromMarquee = () => {
-        setShowBetaPopup(true);
-        localStorage.removeItem('agamify-marquee-dismissed');
-    };
+    // Beta access required UI
+    const BetaRequiredContent = () => (
+        <div className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 border border-white/10 text-center">
+            <div className="w-20 h-20 bg-gradient-to-b from-[#F0D1FF]/20 via-[#68A2FF]/20 to-[#2D18FB]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-[#F0D1FF]" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-4-4 6-6a6 6 0 016 4zm-1.8 1.2a1 1 0 11-1.4-1.4 1 1 0 011.4 1.4zM10 4a2 2 0 100 4 2 2 0 000-4z" clipRule="evenodd" />
+                </svg>
+            </div>
+            
+            <h3 className="text-2xl font-jura font-bold text-white mb-3 uppercase tracking-tighter">
+                🚧 Under Beta Development
+            </h3>
+            
+            <p className="text-white/80 font-fustat font-light mb-6 leading-relaxed">
+                This {feature} is currently available for beta testers only. Join our beta program to get early access to new features.
+            </p>
 
-    // Handle URL params for beta signup after GitHub auth
-    useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const joinBeta = urlParams.get('joinBeta');
-        const emailParam = urlParams.get('email');
-        
-        if (joinBeta === 'true' && emailParam && status === "authenticated") {
-            setEmail(emailParam);
-            setShowBetaPopup(true);
-            // Clean up URL
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    }, [status]);
+            {status === "authenticated" ? (
+                <button
+                    onClick={() => setShowBetaPopup(true)}
+                    className="bg-gradient-to-r from-[#2D18FB] to-[#68A2FF] text-white px-6 py-3 rounded-full font-inter cursor-pointer select-none hover:from-[#4A3FE7] hover:to-[#7BB3FF] transition-all duration-300"
+                >
+                    JOIN BETA PROGRAM
+                </button>
+            ) : (
+                <div className="space-y-4">
+                    <p className="text-white/60 font-fustat text-sm">
+                        Sign in to join the beta program
+                    </p>
+                    <button
+                        onClick={() => signIn("github")}
+                        className="bg-white text-black px-6 py-3 rounded-full font-inter cursor-pointer select-none hover:bg-[#2D1AE6] hover:text-white transition-colors ease"
+                    >
+                        SIGN IN WITH GITHUB
+                    </button>
+                </div>
+            )}
 
-    const handleCloseBetaPopup = () => {
-        localStorage.setItem('agamify-visited', 'true');
-        setShowBetaPopup(false);
-        setSubmitted(false);
-    };
-
-    return (
-        <main>
-            <BetaMarquee onJoinBeta={handleJoinBetaFromMarquee} />
-            {/* Beta Tester Popup */}
+            {/* Beta Signup Popup */}
             {showBetaPopup && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div 
-                        className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 max-w-md w-full mx-4 border border-white/10 relative group"
+                        className="bg-white/10 backdrop-blur-sm rounded-[40px] p-8 max-w-md w-full mx-4 border border-white/10 relative"
                         style={{
                             boxShadow: "0px 16px 48px rgba(240, 209, 255, 0.16), 0px 4px 12px rgba(240, 209, 255, 0.16)"
                         }}
                     >
-                        {/* Gradient border effect */}
                         <div className="absolute inset-0 opacity-100 rounded-[40px] bg-gradient-to-b from-[#F0D1FF]/10 via-[#68A2FF]/10 to-[#2D18FB]/10 pointer-events-none"></div>
                         
                         <div className="relative z-10 text-center">
-                            {/* Icon with polygon background like WhatYouCanDo cards */}
                             <div className="w-20 h-20 flex items-center justify-center mx-auto mb-6 relative">
                                 <div className="absolute inset-0 bg-gradient-to-b from-[#F0D1FF]/20 via-[#68A2FF]/20 to-[#2D18FB]/20 rounded-full opacity-80"></div>
                                 <svg className="w-10 h-10 text-[#F0D1FF] relative z-10" fill="currentColor" viewBox="0 0 20 20">
@@ -159,10 +148,7 @@ export default function LandingPage() {
                             {!submitted ? (
                                 <>
                                     <p className="text-white/80 font-fustat font-light mb-6 leading-relaxed text-base">
-                                        {status === "authenticated" 
-                                            ? "You're signed in! Join our beta testing program to get early access and help shape AGAMIFY's future."
-                                            : "Sign in with GitHub and join our beta testing program to get early access and help shape AGAMIFY's future."
-                                        }
+                                        Join our beta testing program to get early access to this feature and help shape AGAMIFY&apos;s future.
                                     </p>
                                     
                                     <form onSubmit={handleBetaSignup} className="space-y-4">
@@ -178,7 +164,7 @@ export default function LandingPage() {
                                         <div className="flex gap-3">
                                             <button
                                                 type="button"
-                                                onClick={handleCloseBetaPopup}
+                                                onClick={() => setShowBetaPopup(false)}
                                                 className="flex-1 bg-[#211C5540] text-white px-4 py-3 rounded-full font-inter cursor-pointer select-none hover:bg-white/20 transition-colors ease"
                                                 disabled={isSubmitting}
                                             >
@@ -189,12 +175,7 @@ export default function LandingPage() {
                                                 disabled={isSubmitting || !email}
                                                 className="flex-1 bg-white text-black px-4 py-3 rounded-full font-inter cursor-pointer select-none hover:bg-[#2D1AE6] hover:text-white transition-colors ease disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
-                                                {isSubmitting 
-                                                    ? 'Processing...' 
-                                                    : status === "authenticated" 
-                                                        ? 'JOIN BETA' 
-                                                        : 'SIGN IN & JOIN'
-                                                }
+                                                {isSubmitting ? 'Processing...' : 'JOIN BETA'}
                                             </button>
                                         </div>
                                     </form>
@@ -203,16 +184,13 @@ export default function LandingPage() {
                                 <div className="text-center">
                                     <div className="text-4xl mb-4">🎉</div>
                                     <p className="text-white/90 font-fustat mb-4">
-                                        Thanks for joining our beta testing program! You&apos;ll be notified when new features are available.
-                                    </p>
-                                    <p className="text-white/70 font-fustat text-sm">
-                                        Check your dashboard for exclusive beta features.
+                                        Thanks for joining our beta testing program! Refreshing page...
                                     </p>
                                 </div>
                             )}
                             
                             <button
-                                onClick={handleCloseBetaPopup}
+                                onClick={() => setShowBetaPopup(false)}
                                 className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors duration-300"
                             >
                                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -223,11 +201,10 @@ export default function LandingPage() {
                     </div>
                 </div>
             )}
-
-            <Hero />
-            <HowToUse />
-            <WhatYouCanDo />
-            <Pricing />
-        </main>
+        </div>
     );
-}
+
+    return showAsCard ? <BetaRequiredContent /> : <BetaRequiredContent />;
+};
+
+export default BetaGate;
